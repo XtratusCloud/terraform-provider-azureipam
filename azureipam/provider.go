@@ -15,8 +15,9 @@ func Provider() *schema.Provider {
 		Schema: map[string]*schema.Schema{
 			"api_url": {
 				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The root url of the APIM REST API solution to be used, without the /api url suffix",
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("AZUREIPAM_API_URL", nil),
+				Description: "The root url of the APIM REST API solution to be used, without the /api url suffix. Must be also assigned at AZUREIPAM_API_URL environment variable.",
 			},
 			"token": {
 				Type:        schema.TypeString,
