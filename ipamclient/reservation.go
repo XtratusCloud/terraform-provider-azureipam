@@ -46,7 +46,7 @@ func (c *Client) GetReservation(space, block, id string) (*Reservation, error) {
 		}
 	}
 
-	//not found
+	//not found - Azure IPAM delete the reservation after the vnet is deployed.
 	return nil, fmt.Errorf("Reservation not found: %s", id)
 }
 

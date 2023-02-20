@@ -22,7 +22,7 @@ Do not keep your authentication token in HCL, use Terraform environment variable
 terraform {
   required_providers {
     azureipam = {
-      version = "0.1.0"
+      version = "0.1.1"
       source  = "xtratuscloud/azureipam"
     }
   }
@@ -30,7 +30,7 @@ terraform {
 
 ## get an access token for ipam engine application
 data "external" "get_access_token" {
-  program = ["az", "account", "get-access-token", "--resource", "api://fb09120f-xxxx-4d82-91d8-xxxxxxxxxxxx"]
+  program = ["az", "account", "get-access-token", "--resource", "api://d47d5cd9-b599-4a6a-9d54-254565ff08de"]
 }
 
 # Configure the Azure IPAM provider
@@ -50,5 +50,9 @@ resource "azureipam_reservation" "example" {
 
 ## Argument Reference
 
-- **api_url** (Required) The root url of the APIM REST API solution to be used, without the /api url suffix.
-- **token** (Optional) The bearer token to be used when authenticating to the API. Must be also assigned at AZUREIPAM_TOKEN environment variable.
+* `api_url` - (Optional) The root url of the APIM REST API solution to be used, without the /api url suffix. This can also be sourced from the `AZUREIPAM_API_URL` Environment Variable.
+* `token` - (Optional) The bearer token to be used when authenticating to the API. This can also be sourced from the `AZUREIPAM_TOKEN` Environment Variable.
+
+
+## Special Considerations
+Due to the current behaviour of the IPAM application, as the reservation is deleted once the vnet is deployed, an error avoidance mechanism has been implemented, which takes the current values when trying to update the state. This mechanism assumes that the reservation search is only performed when the element is already in the tfstate, to refresh the state information if needed, and it's not performed in the initial plan.
