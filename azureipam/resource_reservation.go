@@ -87,9 +87,8 @@ func resourceReservationRead(ctx context.Context, d *schema.ResourceData, m inte
 	//read reservation
 	reservation, err := c.GetReservation(space, block, id)
 	if err != nil {
-		return diag.FromErr(err)
+		flattenReservation(nil, space, block, d)
 	}
-
 	flattenReservation(reservation, space, block, d)
 
 	return diags
@@ -145,10 +144,15 @@ func resourceReservationDelete(ctx context.Context, d *schema.ResourceData, m in
 func flattenReservation(reservation *cli.Reservation, space, block string, d *schema.ResourceData) {
 	d.Set("space", space)
 	d.Set("block", block)
-	d.Set("id", reservation.Id)
-	d.Set("cidr", reservation.Cidr)
-	d.Set("user_id", reservation.UserId)
-	d.Set("created_on", time.Unix(int64(reservation.CreatedOn), 0).Format(time.RFC1123))
-	d.Set("status", reservation.Status)
-	d.Set("tags", reservation.Tags)
+	if reservation != nil {
+		d.Set("id", reservation.Id)
+		d.Set("cidr", reservation.Cidr)
+		d.Set("user_id", reservation.UserId)
+		d.Set("created_on", time.Unix(int64(reservation.CreatedOn), 0).Format(time.RFC1123))
+		d.Set("status", reservation.Status)
+		d.Set("tags", reservation.Tags)
+	} else {
+		//The IPAM reservation is deleted after vnet is created, to avoid exception take information from current state values
+		d.Set("status", "not_found")
+	}
 }
