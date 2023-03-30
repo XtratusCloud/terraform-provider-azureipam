@@ -1,8 +1,12 @@
 terraform {
   required_providers {
     azureipam = {
-      version = "0.1.1"
+      version = "1.0.0"
       source  = "xtratuscloud/local/azureipam"
+    }
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~>3.30"
     }
   }
 }

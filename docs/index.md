@@ -22,7 +22,7 @@ Do not keep your authentication token in HCL, use Terraform environment variable
 terraform {
   required_providers {
     azureipam = {
-      version = "0.1.1"
+      version = "1.0.0"
       source  = "xtratuscloud/azureipam"
     }
   }
@@ -52,7 +52,3 @@ resource "azureipam_reservation" "example" {
 
 * `api_url` - (Optional) The root url of the APIM REST API solution to be used, without the /api url suffix. This can also be sourced from the `AZUREIPAM_API_URL` Environment Variable.
 * `token` - (Optional) The bearer token to be used when authenticating to the API. This can also be sourced from the `AZUREIPAM_TOKEN` Environment Variable.
-
-
-## Special Considerations
-Due to the current behaviour of the IPAM application, as the reservation is deleted once the vnet is deployed, an error avoidance mechanism has been implemented, which takes the current values when trying to update the state. This mechanism assumes that the reservation search is only performed when the element is already in the tfstate, to refresh the state information if needed, and it's not performed in the initial plan.

@@ -36,11 +36,23 @@ func dataSourceReservations() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"user_id": {
+						"description": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"created_on": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"created_by": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"settled_on": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"settled_by": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
@@ -93,12 +105,15 @@ func parseReservations(reservations *[]cli.Reservation) []interface{} {
 	if reservations != nil {
 		for _, reservation := range *reservations {
 			results = append(results, map[string]interface{}{
-				"id":         reservation.Id,
-				"cidr":       reservation.Cidr,
-				"user_id":    reservation.UserId,
-				"created_on": time.Unix(int64(reservation.CreatedOn), 0).Format(time.RFC1123),
-				"status":     reservation.Status,
-				"tags":       reservation.Tags,
+				"id":          reservation.Id,
+				"cidr":        reservation.Cidr,
+				"description": reservation.Description,
+				"created_on":  time.Unix(int64(reservation.CreatedOn), 0).Format(time.RFC1123),
+				"created_by":  reservation.CreatedBy,
+				"settled_on":  time.Unix(int64(reservation.SettledOn), 0).Format(time.RFC1123),
+				"settled_by":  reservation.SettledBy,
+				"status":      reservation.Status,
+				"tags":        reservation.Tags,
 			})
 		}
 	}

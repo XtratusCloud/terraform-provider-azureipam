@@ -46,18 +46,20 @@ func (c *Client) GetReservation(space, block, id string) (*Reservation, error) {
 		}
 	}
 
-	//not found - Azure IPAM delete the reservation after the vnet is deployed.
+	//not found -> Error
 	return nil, fmt.Errorf("Reservation not found: %s", id)
 }
 
 // CreateReservation - Create new reservation
-func (c *Client) CreateReservation(space, block, description string, size int) (*Reservation, error) {
+func (c *Client) CreateReservation(space, block, description string, size int, reverseSearch bool, smallestCidr bool) (*Reservation, error) {
 	//construct body
 	request := &reservationRequest{
-		Size: size,
+		Size:          size,
+		ReverseSearch: reverseSearch,
+		SmallestCidr:  smallestCidr,
 	}
 	if description != "" {
-		request.Tags = map[string]string{"Description": description}
+		request.Description = description
 	}
 	rb, err := json.Marshal(request)
 	if err != nil {
