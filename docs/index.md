@@ -10,7 +10,7 @@ This provider is intended to manage the reservation of network ranges in the [Az
 
 The provider makes use of the IPAM REST API to manage CIDR range reservations in a space and block from those configured in the application.
 
-> **NOTE** that this provider makes use of a functionality not implemented in the open-source version of the Azure IPAM solution, which allows to include additional tags in the creation of new reservations (used for description). 
+> **NOTE** the provider is aligned with the functionality included in the Azure IPAM solution in the version published on 18 April 2023, in the Pull Request [#113](https://github.com/Azure/ipam/pull/113), so it is necessary that your IPAM implementation have to be based on that version or later.
 
 ## Example Usage
 
@@ -22,20 +22,26 @@ Do not keep your authentication token in HCL, use Terraform environment variable
 terraform {
   required_providers {
     azureipam = {
-      version = "0.1.1"
+      version = "~>1.0"
       source  = "xtratuscloud/azureipam"
     }
   }
 }
 
-## get an access token for ipam engine application
+# Replace with appropriate values for your AZURE IPAM implementation. 
+locals {
+  ipam_url   = "https://myazureipam.azurewebsites.net/"
+  ipam_apiId = "d47d5cd9-b599-4a6a-9d54-254565ff08de" #ApplicationId of the Engine Azure AD Application, see also the [IPAM deployment documentation](https://github.com/Azure/ipam/tree/main/docs/deployment)
+}
+
+## Get an access token for ipam engine application
 data "external" "get_access_token" {
-  program = ["az", "account", "get-access-token", "--resource", "api://d47d5cd9-b599-4a6a-9d54-254565ff08de"]
+  program = ["az", "account", "get-access-token", "--resource", "api://${local.ipam_apiId}"]
 }
 
 # Configure the Azure IPAM provider
 provider "azureipam" {
-  api_url = local.ipam_url_dev
+  api_url = local.ipam_url
   token   = data.external.get_access_token.result.accessToken
 }
 
@@ -52,7 +58,3 @@ resource "azureipam_reservation" "example" {
 
 * `api_url` - (Optional) The root url of the APIM REST API solution to be used, without the /api url suffix. This can also be sourced from the `AZUREIPAM_API_URL` Environment Variable.
 * `token` - (Optional) The bearer token to be used when authenticating to the API. This can also be sourced from the `AZUREIPAM_TOKEN` Environment Variable.
-
-
-## Special Considerations
-Due to the current behaviour of the IPAM application, as the reservation is deleted once the vnet is deployed, an error avoidance mechanism has been implemented, which takes the current values when trying to update the state. This mechanism assumes that the reservation search is only performed when the element is already in the tfstate, to refresh the state information if needed, and it's not performed in the initial plan.

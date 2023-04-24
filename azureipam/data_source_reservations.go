@@ -23,6 +23,10 @@ func dataSourceReservations() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"include_settled": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 			"reservations": {
 				Type:     schema.TypeList,
 				Computed: true,
@@ -36,11 +40,23 @@ func dataSourceReservations() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						"user_id": {
+						"description": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"created_on": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"created_by": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"settled_on": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"settled_by": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
@@ -65,13 +81,14 @@ func dataSourceReservations() *schema.Resource {
 func dataSourceReservationsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	space := d.Get("space").(string)
 	block := d.Get("block").(string)
+	includeSettled := d.Get("include_settled").(bool)
 	c := m.(*cli.Client)
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
 	//decode json response to struct defined in models
-	reservationsInfo, err := c.GetReservations(space, block)
+	reservationsInfo, err := c.GetReservations(space, block, includeSettled)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -93,12 +110,15 @@ func parseReservations(reservations *[]cli.Reservation) []interface{} {
 	if reservations != nil {
 		for _, reservation := range *reservations {
 			results = append(results, map[string]interface{}{
-				"id":         reservation.Id,
-				"cidr":       reservation.Cidr,
-				"user_id":    reservation.UserId,
-				"created_on": time.Unix(int64(reservation.CreatedOn), 0).Format(time.RFC1123),
-				"status":     reservation.Status,
-				"tags":       reservation.Tags,
+				"id":          reservation.Id,
+				"cidr":        reservation.Cidr,
+				"description": reservation.Description,
+				"created_on":  time.Unix(int64(reservation.CreatedOn), 0).Format(time.RFC1123),
+				"created_by":  reservation.CreatedBy,
+				"settled_on":  time.Unix(int64(reservation.SettledOn), 0).Format(time.RFC1123),
+				"settled_by":  reservation.SettledBy,
+				"status":      reservation.Status,
+				"tags":        reservation.Tags,
 			})
 		}
 	}

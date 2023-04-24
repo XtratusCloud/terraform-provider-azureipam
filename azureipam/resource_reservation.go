@@ -2,8 +2,6 @@ package azureipam
 
 import (
 	"context"
-	"fmt"
-	"strings"
 	"time"
 
 	cli "terraform-provider-azureipam/ipamclient"
@@ -41,6 +39,16 @@ func resourceReservation() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 			},
+			"reverse_search": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				ForceNew: true,
+			},
+			"smallest_cidr": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				ForceNew: true,
+			},
 			"id": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -49,7 +57,7 @@ func resourceReservation() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
-			"user_id": {
+			"created_by": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -74,20 +82,18 @@ func resourceReservation() *schema.Resource {
 }
 
 func resourceReservationRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	id := d.Get("id").(string)
+	space := d.Get("space").(string)
+	block := d.Get("block").(string)
 	c := m.(*cli.Client)
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
-	//the reservation Id is stored as space/block/id
-	idParts := strings.Split(d.Id(), "/")
-	space := idParts[0]
-	block := idParts[1]
-	id := idParts[2]
 	//read reservation
 	reservation, err := c.GetReservation(space, block, id)
 	if err != nil {
-		flattenReservation(nil, space, block, d)
+		return diag.FromErr(err)
 	}
 	flattenReservation(reservation, space, block, d)
 
@@ -99,17 +105,20 @@ func resourceReservationCreate(ctx context.Context, d *schema.ResourceData, m in
 	block := d.Get("block").(string)
 	description := d.Get("description").(string)
 	size := d.Get("size").(int)
+	reserveSearch := d.Get("reverse_search").(bool)
+	smallestCidr := d.Get("smallest_cidr").(bool)
 	c := m.(*cli.Client)
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
-	reservation, err := c.CreateReservation(space, block, description, size)
+	//Create reservation
+	reservation, err := c.CreateReservation(space, block, description, size, reserveSearch, smallestCidr)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	d.SetId(fmt.Sprintf("%s/%s/%s", space, block, reservation.Id))
+	d.SetId(reservation.Id)
 
 	flattenReservation(reservation, space, block, d)
 
@@ -117,16 +126,13 @@ func resourceReservationCreate(ctx context.Context, d *schema.ResourceData, m in
 }
 
 func resourceReservationDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	id := d.Get("id").(string)
+	space := d.Get("space").(string)
+	block := d.Get("block").(string)
 	c := m.(*cli.Client)
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
-
-	//the reservation Id is stored as space/block/id
-	idParts := strings.Split(d.Id(), "/")
-	space := idParts[0]
-	block := idParts[1]
-	id := idParts[2]
 
 	//delete reservation
 	err := c.DeleteReservation(space, block, id)
@@ -144,15 +150,13 @@ func resourceReservationDelete(ctx context.Context, d *schema.ResourceData, m in
 func flattenReservation(reservation *cli.Reservation, space, block string, d *schema.ResourceData) {
 	d.Set("space", space)
 	d.Set("block", block)
-	if reservation != nil {
-		d.Set("id", reservation.Id)
-		d.Set("cidr", reservation.Cidr)
-		d.Set("user_id", reservation.UserId)
-		d.Set("created_on", time.Unix(int64(reservation.CreatedOn), 0).Format(time.RFC1123))
-		d.Set("status", reservation.Status)
-		d.Set("tags", reservation.Tags)
-	} else {
-		//The IPAM reservation is deleted after vnet is created, to avoid exception take information from current state values
-		d.Set("status", "not_found")
-	}
+	d.Set("id", reservation.Id)
+	d.Set("cidr", reservation.Cidr)
+	d.Set("description", reservation.Description)
+	d.Set("created_on", time.Unix(int64(reservation.CreatedOn), 0).Format(time.RFC1123))
+	d.Set("created_by", reservation.CreatedBy)
+	d.Set("settled_on", time.Unix(int64(reservation.SettledOn), 0).Format(time.RFC1123))
+	d.Set("settled_by", reservation.SettledBy)
+	d.Set("status", reservation.Status)
+	d.Set("tags", reservation.Tags)
 }
