@@ -23,6 +23,10 @@ func dataSourceReservations() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"include_settled": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 			"reservations": {
 				Type:     schema.TypeList,
 				Computed: true,
@@ -77,13 +81,14 @@ func dataSourceReservations() *schema.Resource {
 func dataSourceReservationsRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	space := d.Get("space").(string)
 	block := d.Get("block").(string)
+	includeSettled := d.Get("include_settled").(bool)
 	c := m.(*cli.Client)
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
 	//decode json response to struct defined in models
-	reservationsInfo, err := c.GetReservations(space, block)
+	reservationsInfo, err := c.GetReservations(space, block, includeSettled)
 	if err != nil {
 		return diag.FromErr(err)
 	}

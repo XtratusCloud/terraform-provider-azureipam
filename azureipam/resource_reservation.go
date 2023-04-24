@@ -2,8 +2,6 @@ package azureipam
 
 import (
 	"context"
-	"fmt"
-	"strings"
 	"time"
 
 	cli "terraform-provider-azureipam/ipamclient"
@@ -84,16 +82,14 @@ func resourceReservation() *schema.Resource {
 }
 
 func resourceReservationRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	id := d.Get("id").(string)
+	space := d.Get("space").(string)
+	block := d.Get("block").(string)
 	c := m.(*cli.Client)
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
-	//the reservation Id is stored as space/block/id
-	idParts := strings.Split(d.Id(), "/")
-	space := idParts[0]
-	block := idParts[1]
-	id := idParts[2]
 	//read reservation
 	reservation, err := c.GetReservation(space, block, id)
 	if err != nil {
@@ -116,12 +112,13 @@ func resourceReservationCreate(ctx context.Context, d *schema.ResourceData, m in
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
+	//Create reservation
 	reservation, err := c.CreateReservation(space, block, description, size, reserveSearch, smallestCidr)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	d.SetId(fmt.Sprintf("%s/%s/%s", space, block, reservation.Id))
+	d.SetId(reservation.Id)
 
 	flattenReservation(reservation, space, block, d)
 
@@ -129,16 +126,13 @@ func resourceReservationCreate(ctx context.Context, d *schema.ResourceData, m in
 }
 
 func resourceReservationDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	id := d.Get("id").(string)
+	space := d.Get("space").(string)
+	block := d.Get("block").(string)
 	c := m.(*cli.Client)
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
-
-	//the reservation Id is stored as space/block/id
-	idParts := strings.Split(d.Id(), "/")
-	space := idParts[0]
-	block := idParts[1]
-	id := idParts[2]
 
 	//delete reservation
 	err := c.DeleteReservation(space, block, id)

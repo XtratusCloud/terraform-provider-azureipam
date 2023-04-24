@@ -1,7 +1,9 @@
+# We strongly recommend using the required_providers block to set the
+# azureipam provider source and version being used
 terraform {
   required_providers {
     azureipam = {
-      version = "1.0.0"
+      version = "~>1.0"
       source  = "xtratuscloud/local/azureipam"
     }
     azurerm = {
@@ -11,17 +13,21 @@ terraform {
   }
 }
 
+# Replace with appropriate values for your AZURE IPAM implementation. 
 locals {
-  ipam_url_dev   = "https://fna-we-c-ipam-01.azurewebsites.net"
-  ipam_apiId_dev = "fb09120f-6fc4-4d82-91d8-69a47d73779e"
+  ipam_url   = "https://myazureipam.azurewebsites.net/"
+  ipam_apiId = "d47d5cd9-b599-4a6a-9d54-254565ff08de" #ApplicationId of the Engine Azure AD Application, see also the [IPAM deployment documentation](https://github.com/Azure/ipam/tree/main/docs/deployment)
 }
 
+## Get an access token for ipam engine application
+data "external" "get_access_token" {
+  program = ["az", "account", "get-access-token", "--resource", "api://${local.ipam_apiId}"]
+}
+
+
+# Configure the Azure IPAM provider
 provider "azureipam" {
-  api_url = local.ipam_url_dev
+  api_url = local.ipam_url
   token   = data.external.get_access_token.result.accessToken
 }
 
-##get an access token to storage resources
-data "external" "get_access_token" {
-  program = ["az", "account", "get-access-token", "--resource", "api://${local.ipam_apiId_dev}"]
-}

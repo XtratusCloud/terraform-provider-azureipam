@@ -9,9 +9,9 @@ import (
 )
 
 // GetReservations - Returns all existing reservations by space and block
-func (c *Client) GetReservations(space, block string) ([]Reservation, error) {
+func (c *Client) GetReservations(space, block string, includeSettled bool) ([]Reservation, error) {
 	//prepare request
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/spaces/%s/blocks/%s/reservations", c.HostURL, space, block), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/spaces/%s/blocks/%s/reservations?settled=%t", c.HostURL, space, block, includeSettled), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (c *Client) GetReservations(space, block string) ([]Reservation, error) {
 func (c *Client) GetReservation(space, block, id string) (*Reservation, error) {
 
 	//read all reservations
-	reservationsInfo, err := c.GetReservations(space, block)
+	reservationsInfo, err := c.GetReservations(space, block, true)
 	if err != nil {
 		return nil, err
 	}

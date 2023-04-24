@@ -53,7 +53,7 @@ func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 	}
 
 	//write error not StatusOK
-	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusAccepted {
+	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusAccepted && res.StatusCode != http.StatusNoContent {
 		return nil, fmt.Errorf("status: %d, body: %s", res.StatusCode, body)
 	}
 
