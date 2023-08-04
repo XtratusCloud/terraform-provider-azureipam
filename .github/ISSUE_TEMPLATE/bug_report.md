@@ -16,6 +16,9 @@ Steps to reproduce the behavior.
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
+**Error**
+The complete error message displayed, including stack trace 
+
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
@@ -23,6 +26,7 @@ If applicable, add screenshots to help explain your problem.
  - OS: [e.g. iOS]
  - Browser and version [e.g. chrome, safari, edge]
  - Terraform version
+ - azureipam solution version (or the commit in the [azureipam repository](https://github.com/Azure/ipam/commits/main)
  - Other relevant providers
 
 **Additional context**
