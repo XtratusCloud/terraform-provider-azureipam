@@ -30,7 +30,7 @@ resource "azurerm_resource_group" "example" {
 resource "azurerm_virtual_network" "example" {
   name                = "example-network"
   location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group
+  resource_group_name = azurerm_resource_group.example.name
 
   address_space = [azureipam_reservation.example.cidr]
   tags          = azureipam_reservation.example.tags ##Don't forget to add the auto-generated `X-IPAM-RES-ID` tag to the vnet.
