@@ -31,6 +31,7 @@ func Provider() *schema.Provider {
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"azureipam_reservations": dataSourceReservations(),
+			"azureipam_spaces": dataSourceSpaces(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}

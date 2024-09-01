@@ -86,7 +86,7 @@ func (c *Client) CreateReservation(space, block, description string, size int, r
 	return &reservation, nil
 }
 
-// DeleteOrder - Deletes an order
+// DeleteReservation - Deletes a reservation
 func (c *Client) DeleteReservation(space, block, id string) error {
 	//construct body
 	request := [1]string{id}

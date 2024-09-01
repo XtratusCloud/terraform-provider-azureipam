@@ -1,0 +1,20 @@
+---
+page_title: "Provider: {.ProviderName}}"
+subcategory: ""
+description: |-
+  Terraform provider to manage reservations in Azure IPAM solution through REST API.
+---
+
+This provider is intended to manage the reservation of network ranges in the [Azure IPAM](https://github.com/Azure/ipam) solution. IPAM solution is a simple, straightforward way to manage IP address spaces in Azure, and it's's required to have a previous implementation of this solution.
+
+The provider makes use of the IPAM REST API to manage CIDR range reservations in a space and block from those configured in the application.
+
+> **NOTE** the provider is aligned with the functionality included in the Azure IPAM solution in the version published on 18 April 2023, in the Pull Request [#113](https://github.com/Azure/ipam/pull/113), so it is necessary that your IPAM implementation have to be based on that version or later.
+
+## Example Usage
+
+Do not keep your authentication token in HCL, use Terraform environment variables or generate as part of the deploymenet process.
+
+{{ tffile (printf "examples/provider/provider.tf")}}
+
+{{ .SchemaMarkdown | trimspace }}
