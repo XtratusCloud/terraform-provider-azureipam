@@ -1,7 +1,7 @@
 # Returns all reservations in au/AustraliaEast block
 data "azureipam_reservations" "all" {
-  space = "au"
-  block = "AustraliaEast"
+  space           = "au"
+  block           = "AustraliaEast"
   include_settled = true
 }
 output "all_reservations" {
