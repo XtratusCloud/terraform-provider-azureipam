@@ -47,20 +47,19 @@ output "not_settled_reservations" {
 
 ### Read-Only
 
-- `id` (String) The ID of this resource.
-- `reservations` (List of Object) List containing the `reservations` found for the specified attributes. (see [below for nested schema](#nestedatt--reservations))
+- `reservations` (Attributes List) List containing the `reservations` found for the specified attributes. (see [below for nested schema](#nestedatt--reservations))
 
 <a id="nestedatt--reservations"></a>
 ### Nested Schema for `reservations`
 
 Read-Only:
 
-- `cidr` (String)
-- `created_by` (String)
-- `created_on` (String)
-- `description` (String)
-- `id` (String)
-- `settled_by` (String)
-- `settled_on` (String)
-- `status` (String)
-- `tags` (Map of String)
+- `cidr` (String) The assigned and reserved range, in cidr notation.
+- `created_by` (String) Email or identification of user that created the reservation.
+- `created_on` (String) The date and time that the reservacion was created.
+- `description` (String) Description text that describe the reservation.
+- `id` (String) The unique identifier of the reservation.
+- `settled_by` (String) Email or identification of user that have settled the reservation.
+- `settled_on` (String) The date and time when the reservation was settled.
+- `status` (String) Status of the reservation, a 'wait' status indicates that is waiting for the related vnet creation.
+- `tags` (Map of String) Auto-generated tags for the reservation. Particular relevance the 'X-IPAM-RES-ID' tag, since it must be included in the vnet creation in order that the IPAM solution automatically considers the reservation as completed.

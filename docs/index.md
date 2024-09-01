@@ -53,4 +53,4 @@ provider "azureipam" {
 ### Optional
 
 - `api_url` (String) The root url of the APIM REST API solution to be used, without the /api url suffix. Must be also assigned at AZUREIPAM_API_URL environment variable.
-- `token` (String) The bearer token to be used when authenticating to the API. Must be also assigned at AZUREIPAM_TOKEN environment variable.
+- `token` (String, Sensitive) The bearer token to be used when authenticating to the API. Must be also assigned at AZUREIPAM_TOKEN environment variable.
