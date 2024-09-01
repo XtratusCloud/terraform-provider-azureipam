@@ -6,10 +6,6 @@ terraform {
       version = "~>1.1"
       source  = "xtratuscloud/azureipam"
     }
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~>3.116"
-    }
   }
 }
 
@@ -21,11 +17,7 @@ locals {
 
 ## Get an access token for ipam engine application
 data "external" "get_access_token" {
-  program = ["az", "account", "get-access-token", "--resource", "api://${local.ipam_apiId}", "--query", "{accessToken:accessToken}"]
-}
-
-provider "azurerm" {
-  features{}
+  program = ["az", "account", "get-access-token", "--resource", "api://${local.ipam_apiId}"]
 }
 
 # Configure the Azure IPAM provider
@@ -33,4 +25,3 @@ provider "azureipam" {
   api_url = local.ipam_url
   token   = data.external.get_access_token.result.accessToken
 }
-

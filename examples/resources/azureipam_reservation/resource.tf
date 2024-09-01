@@ -1,17 +1,3 @@
-# Create a CIDR reservation
-resource "azureipam_reservation" "created" {
-  space          = "au"
-  block          = "AustraliaEast"
-  size           = 24
-  description    = "this is a test"
-  reverse_search = true
-  smallest_cidr  = true
-}
-output "created" {
-  value = azureipam_reservation.created
-}
-
-
 # Deploy the azurerm vnet
 resource "azurerm_resource_group" "example" {
   name     = "example-resources"
@@ -24,4 +10,17 @@ resource "azurerm_virtual_network" "example" {
 
   address_space = [azureipam_reservation.created.cidr]
   tags          = azureipam_reservation.created.tags ##Don't forget to add the auto-generated `X-IPAM-RES-ID` tag to the vnet.
+}
+
+# Create a CIDR reservation
+resource "azureipam_reservation" "created" {
+  space          = "au"
+  block          = "AustraliaEast"
+  size           = 24
+  description    = "this is a test"
+  reverse_search = true
+  smallest_cidr  = true
+}
+output "created" {
+  value = azureipam_reservation.created
 }
