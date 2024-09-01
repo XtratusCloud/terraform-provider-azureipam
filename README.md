@@ -13,18 +13,27 @@ Run the following command to build the provider
 ```shell
 $ go build -o terraform-provider-azureipam
 ```
+or
+
+```shell
+$ make build
+```
 
 ## Local release build
 
 ```shell
-$ go install github.com/goreleaser/goreleaser@latest
+$ go install github.com/goreleaser/goreleaser/v2@latest
 ```
 
 ```shell
 $ make release
 ```
 
-You will find the releases in the `/dist` directory. You will need to rename the provider binary to `terraform-provider-azureipam` and move the binary into [the appropriate subdirectory within the user plugins directory](https://learn.hashicorp.com/tutorials/terraform/provider-use?in=terraform/providers#install-hashicups-provider).
+You will find the releases in the `/dist` directory. You will need to rename the provider binary to `terraform-provider-azureipam` before use it.
+To run locally you can proceed in the following ways:  
+
+- Create a [Terraform CLI Configuration File with Development Overrides](https://developer.hashicorp.com/terraform/plugin/debugging#terraform-cli-development-overrides) that includes a `provider_installation` block with a `dev_overrides` block, specifiyng the path where your local binary is created.
+- Copy the binary file into one of the [implied configuration `filesystem_mirror` folder](https://developer.hashicorp.com/terraform/cli/config/config-file#implied-local-mirror-directories) after each build.
 
 
 ## Test sample configuration

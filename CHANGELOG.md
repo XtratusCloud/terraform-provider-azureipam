@@ -29,3 +29,11 @@
 
 ### Fixed
 + Reservation is not longer deleted, removed error prevention when not found in redeployments. Also removed `Special Considerations` section in documentation.
+
+
+## 2024.09.01 - v1.1.0
+### Added
++ data resource `azureipam_spaces` to get a list of all Spaces.
+
+### Fixed
++ None
