@@ -7,6 +7,7 @@ import (
 
 	ipamclient "terraform-provider-azureipam/ipamclient"
 
+	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -19,8 +20,8 @@ import (
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
-	_ resource.Resource                = &reservationResource{}
-	_ resource.ResourceWithConfigure   = &reservationResource{}
+	_ resource.Resource              = &reservationResource{}
+	_ resource.ResourceWithConfigure = &reservationResource{}
 )
 
 // NewReservationResource is a helper function to simplify the provider implementation.
@@ -39,9 +40,11 @@ type reservationResourceModel struct {
 	Id            types.String      `tfsdk:"id"`
 	Cidr          types.String      `tfsdk:"cidr"`
 	CreatedBy     types.String      `tfsdk:"created_by"`
-	CreatedOn     types.String      `tfsdk:"created_on"`
+	CreatedOn     timetypes.RFC3339 `tfsdk:"created_on"`
+	SettledBy     types.String      `tfsdk:"settled_by"`
+	SettledOn     timetypes.RFC3339 `tfsdk:"settled_on"`
 	Status        types.String      `tfsdk:"status"`
-	Tags          map[string]string `tfsdk:"tags"`
+	Tags          types.Map         `tfsdk:"tags"`
 }
 
 // reservationResource is the resource implementation.
@@ -114,7 +117,17 @@ func (r *reservationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Computed:    true,
 			},
 			"created_on": schema.StringAttribute{
+				CustomType:  timetypes.RFC3339Type{},
 				Description: "The date and time that the reservacion was created.",
+				Computed:    true,
+			},
+			"settled_by": schema.StringAttribute{
+				Description: "Email or identification of user that settled the reservation.",
+				Computed:    true,
+			},
+			"settled_on": schema.StringAttribute{
+				CustomType:  timetypes.RFC3339Type{},
+				Description: "The date and time that the reservacion was settled.",
 				Computed:    true,
 			},
 			"status": schema.StringAttribute{
@@ -157,8 +170,8 @@ func (r *reservationResource) Create(ctx context.Context, req resource.CreateReq
 	}
 
 	// Map response body to schema and populate Computed attribute values
-	flattenReservation(reservation,plan)
-	 
+	flattenReservation(reservation, &plan)
+	plan.Tags, _ = types.MapValueFrom(ctx, types.StringType, reservation.Tags)
 
 	// Set state to fully populated data
 	diags = resp.State.Set(ctx, plan)
@@ -178,10 +191,15 @@ func (r *reservationResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
+	var size types.Int32
+	diags = req.State.GetAttribute(ctx, path.Root("size"), &size)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	// Get refreshed reservation value from AzureIpam
-	reservation, err := r.client.GetReservation(
-		state.Space.ValueString(),
-		state.Block.ValueString(),
+	reservation, err := r.client.FindReservationById(
 		state.Id.ValueString(),
 	)
 	if err != nil {
@@ -193,7 +211,8 @@ func (r *reservationResource) Read(ctx context.Context, req resource.ReadRequest
 	}
 
 	// Overwrite items with refreshed state
-	flattenReservation(reservation,state)
+	flattenReservation(reservation, &state)
+	state.Tags, _ = types.MapValueFrom(ctx, types.StringType, reservation.Tags)
 
 	// Set refreshed state
 	diags = resp.State.Set(ctx, &state)
@@ -214,7 +233,6 @@ func (n *reservationResource) Update(ctx context.Context, req resource.UpdateReq
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &model)...)
 }
-
 
 func (r *reservationResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 	// Retrieve values from state
@@ -266,16 +284,23 @@ func (r *reservationResource) ImportState(ctx context.Context, req resource.Impo
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
-
-
-func flattenReservation(reservation *ipamclient.Reservation, model reservationResourceModel) {
+func flattenReservation(reservation *ipamclient.Reservation, model *reservationResourceModel) {
 	model.Id = types.StringValue(reservation.Id)
 	model.Space = types.StringValue(reservation.Space)
 	model.Block = types.StringValue(reservation.Block)
 	model.Cidr = types.StringValue(reservation.Cidr)
 	model.Description = types.StringValue(reservation.Description)
-	model.CreatedOn = types.StringValue(time.Unix(int64(reservation.CreatedOn), 0).Format(time.RFC1123))
+	model.CreatedOn = timetypes.NewRFC3339TimeValue(time.Unix(int64(reservation.CreatedOn), 0))
 	model.CreatedBy = types.StringValue(reservation.CreatedBy)
+	if reservation.SettledOn == nil {
+		model.SettledOn = timetypes.NewRFC3339Null()
+	} else {
+		model.SettledOn = timetypes.NewRFC3339TimeValue(time.Unix(int64(*reservation.SettledOn), 0))
+	}
+	if reservation.SettledBy == nil {
+		model.SettledBy = types.StringNull()
+	} else {
+		model.SettledBy = types.StringValue(*reservation.SettledBy)
+	}
 	model.Status = types.StringValue(reservation.Status)
-	model.Tags = reservation.Tags
 }

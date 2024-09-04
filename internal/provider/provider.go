@@ -166,7 +166,7 @@ func (p *azureIpamProvider) Configure(ctx context.Context, req provider.Configur
 func (p *azureIpamProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewReservationsDataSource,
-		// dataSourceSpaces(),
+		NewSpacesDataSource,
 	}
 }
 

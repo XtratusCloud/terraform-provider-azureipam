@@ -9,7 +9,7 @@ import (
 )
 
 // GetReservations - Returns all existing reservations by space and block
-func (c *Client) GetReservations(space, block string, includeSettled bool) ([]Reservation, error) {
+func (c *Client) GetReservations(space, block string, includeSettled bool) (*[]Reservation, error) {
 	//prepare request
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/spaces/%s/blocks/%s/reservations?settled=%t", c.HostURL, space, block, includeSettled), nil)
 	if err != nil {
@@ -27,11 +27,35 @@ func (c *Client) GetReservations(space, block string, includeSettled bool) ([]Re
 		return nil, err
 	}
 
-	return reservationsInfo, nil
+	return &reservationsInfo, nil
 }
 
-// GetReservation - Returns a specifc reservation by space and block
-func (c *Client) GetReservation(space, block, id string) (*Reservation, error) {
+// GetReservation - Search for a specifc reservation ID iterating spaces and blocks
+func (c *Client) FindReservationById(id string) (*Reservation, error) {
+
+	//read all reservations
+	spaces, err := c.GetSpaces(false, false)
+	if err != nil {
+		return nil, err
+	}
+
+	//find the reservation by Id, and returns
+	for _, space := range *spaces {
+		for _, block := range space.Blocks {
+			for _, reservation := range block.Reservations {
+				if reservation.Id == id {
+					return c.GetReservation(space.Name, block.Name, reservation.Id)
+				}
+			}
+		}
+	}
+
+	//not found -> Error
+	return nil, fmt.Errorf("Reservation not found: %s", id)
+}
+
+// GetReservation - Search for a specifc reservation ID iterating spaces and blocks
+func (c *Client) GetReservation(space string, block string, id string) (*Reservation, error) {
 
 	//read all reservations
 	reservationsInfo, err := c.GetReservations(space, block, true)
@@ -40,7 +64,7 @@ func (c *Client) GetReservation(space, block, id string) (*Reservation, error) {
 	}
 
 	//find the reservation by Id, and returns
-	for _, reservation := range reservationsInfo {
+	for _, reservation := range *reservationsInfo {
 		if reservation.Id == id {
 			return &reservation, nil
 		}

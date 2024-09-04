@@ -7,6 +7,7 @@ import (
 
 	ipamclient "terraform-provider-azureipam/ipamclient"
 
+	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -38,12 +39,12 @@ type reservationsDataSourceModel struct {
 
 // reservationsModel maps reservations schema data.
 type reservationsModel struct {
-	Id			types.String      `tfsdk:"id"`
- 	Cidr        types.String      `tfsdk:"cidr"`
+	Id          types.String      `tfsdk:"id"`
+	Cidr        types.String      `tfsdk:"cidr"`
 	Description types.String      `tfsdk:"description"`
-	CreatedOn   types.String      `tfsdk:"created_on"`
+	CreatedOn   timetypes.RFC3339 `tfsdk:"created_on"`
 	CreatedBy   types.String      `tfsdk:"created_by"`
-	SettledOn   types.String      `tfsdk:"settled_on"`
+	SettledOn   timetypes.RFC3339 `tfsdk:"settled_on"`
 	SettledBy   types.String      `tfsdk:"settled_by"`
 	Status      types.String      `tfsdk:"status"`
 	Tags        map[string]string `tfsdk:"tags"`
@@ -89,6 +90,7 @@ func (d *reservationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 							Computed:    true,
 						},
 						"created_on": schema.StringAttribute{
+							CustomType:  timetypes.RFC3339Type{},
 							Description: "The date and time that the reservacion was created.",
 							Computed:    true,
 						},
@@ -97,6 +99,7 @@ func (d *reservationsDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 							Computed:    true,
 						},
 						"settled_on": schema.StringAttribute{
+							CustomType:  timetypes.RFC3339Type{},
 							Description: "The date and time when the reservation was settled.",
 							Computed:    true,
 						},
@@ -137,18 +140,9 @@ func (d *reservationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 	}
 
 	// Map response body to model
-	for _, reservation := range reservations {
-		reservationState := reservationsModel{
-			Id:          types.StringValue(reservation.Id),
-			Cidr:        types.StringValue(reservation.Cidr),
-			Description: types.StringValue(reservation.Description),
-			CreatedOn:   types.StringValue(time.Unix(int64(reservation.CreatedOn), 0).Format(time.RFC1123)),
-			CreatedBy:   types.StringValue(reservation.CreatedBy),
-			SettledOn:   types.StringValue(time.Unix(int64(reservation.SettledOn), 0).Format(time.RFC1123)),
-			SettledBy:   types.StringValue(reservation.SettledBy),
-			Status:      types.StringValue(reservation.Status),
-			Tags:        reservation.Tags,
-		}
+	for _, reservation := range *reservations {
+		var reservationState reservationsModel
+		flattenreservationsModel(&reservation, &reservationState)
 		state.Reservations = append(state.Reservations, reservationState)
 	}
 
@@ -179,4 +173,24 @@ func (d *reservationsDataSource) Configure(_ context.Context, req datasource.Con
 	}
 
 	d.client = client
+}
+
+func flattenreservationsModel(reservation *ipamclient.Reservation, model *reservationsModel) {
+	model.Id = types.StringValue(reservation.Id)
+	model.Cidr = types.StringValue(reservation.Cidr)
+	model.Description = types.StringValue(reservation.Description)
+	model.CreatedOn = timetypes.NewRFC3339TimeValue(time.Unix(int64(reservation.CreatedOn), 0))
+	model.CreatedBy = types.StringValue(reservation.CreatedBy)
+	if reservation.SettledOn == nil {
+		model.SettledOn = timetypes.NewRFC3339Null()
+	} else {
+		model.SettledOn = timetypes.NewRFC3339TimeValue(time.Unix(int64(*reservation.SettledOn), 0))
+	}
+	if reservation.SettledBy == nil {
+		model.SettledBy = types.StringNull()
+	} else {
+		model.SettledBy = types.StringValue(*reservation.SettledBy)
+	}
+	model.Status = types.StringValue(reservation.Status)
+
 }
