@@ -17,7 +17,7 @@ locals {
 
 ## Get an access token for ipam engine application
 data "external" "get_access_token" {
-  program = ["az", "account", "get-access-token", "--resource", "api://${local.ipam_apiId}"]
+  program = ["az", "account", "get-access-token", "--resource", "api://${local.ipam_apiId}", "--query", "{accessToken:accessToken}"]
 }
 
 # Configure the Azure IPAM provider

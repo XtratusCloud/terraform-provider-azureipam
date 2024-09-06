@@ -3,6 +3,8 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	ipamclient "terraform-provider-azureipam/ipamclient"
@@ -12,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int32planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -79,16 +80,10 @@ func (r *reservationResource) Schema(_ context.Context, _ resource.SchemaRequest
 			"size": schema.Int32Attribute{
 				Description: "Integer value to indicate the subnet mask bits, which defines the size of the vnet to reserve (example 24 for a /24 subnet).",
 				Required:    true,
-				PlanModifiers: []planmodifier.Int32{
-					int32planmodifier.RequiresReplace(),
-				},
 			},
 			"description": schema.StringAttribute{
 				Description: "Description text that describe the reservation, that will be added as an additional tag.",
 				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
-				},
 			},
 			"reverse_search": schema.BoolAttribute{
 				Description: "New networks will be created as close to the end of the block as possible?. Defaults to `false`.",
@@ -190,15 +185,8 @@ func (r *reservationResource) Read(ctx context.Context, req resource.ReadRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
-	var size types.Int32
-	diags = req.State.GetAttribute(ctx, path.Root("size"), &size)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	// Get refreshed reservation value from AzureIpam
+ 
+	//read reservation
 	reservation, err := r.client.FindReservationById(
 		state.Id.ValueString(),
 	)
@@ -212,7 +200,19 @@ func (r *reservationResource) Read(ctx context.Context, req resource.ReadRequest
 
 	// Overwrite items with refreshed state
 	flattenReservation(reservation, &state)
+	// state.ReverseSearch = types.BoolValue(reverse_search)
+	// state.SmallestCidr = types.BoolValue(smallest_cidr)
 	state.Tags, _ = types.MapValueFrom(ctx, types.StringType, reservation.Tags)
+	//Calculate requested size from assigned Cidr
+	size, err := strconv.Atoi(strings.Split(reservation.Cidr, "/")[1])
+	state.Size = types.Int32Value(int32(size))
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Reading AzureIpam Reservation",
+			"Could not determinate requested size for Reservation with id "+state.Id.ValueString()+": "+err.Error(),
+		)
+		return
+	}
 
 	// Set refreshed state
 	diags = resp.State.Set(ctx, &state)
