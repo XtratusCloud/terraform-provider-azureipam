@@ -22,12 +22,12 @@ resource "azurerm_virtual_network" "example" {
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
 
-  address_space = [azureipam_reservation.created.cidr]
-  tags          = azureipam_reservation.created.tags ##Don't forget to add the auto-generated `X-IPAM-RES-ID` tag to the vnet.
+  address_space = [azureipam_reservation.new.cidr]
+  tags          = azureipam_reservation.new.tags ##Don't forget to add the auto-generated `X-IPAM-RES-ID` tag to the vnet.
 }
 
 # Create a CIDR reservation
-resource "azureipam_reservation" "created" {
+resource "azureipam_reservation" "new" {
   space          = "au"
   block          = "AustraliaEast"
   size           = 24
@@ -36,7 +36,7 @@ resource "azureipam_reservation" "created" {
   smallest_cidr  = true
 }
 output "created" {
-  value = azureipam_reservation.created
+  value = azureipam_reservation.new
 }
 ```
 
@@ -61,5 +61,15 @@ output "created" {
 - `created_by` (String) Email or identification of user that created the reservation.
 - `created_on` (String) The date and time that the reservacion was created.
 - `id` (String) The unique identifier of the generated reservation.
+- `settled_by` (String) Email or identification of user that settled the reservation.
+- `settled_on` (String) The date and time that the reservacion was settled.
 - `status` (String) Status of the reservation, a 'wait' status indicates that is waiting for the related vnet creation
 - `tags` (Map of String) Auto-generated tags for the reservation. Particular relevance the 'X-IPAM-RES-ID' tag, since it must be included in the vnet creation in order that the IPAM solution automatically considers the reservation as completed.
+
+## Import
+
+Reservations can be imported using the ID of the IPAM reservation, e.g.
+
+```shell
+terraform import azureipam_reservation.new j26zNRqH8SSNLDv34VEdG6
+```
