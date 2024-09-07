@@ -13,7 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int32planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -80,6 +80,9 @@ func (r *reservationResource) Schema(_ context.Context, _ resource.SchemaRequest
 			"size": schema.Int32Attribute{
 				Description: "Integer value to indicate the subnet mask bits, which defines the size of the vnet to reserve (example 24 for a /24 subnet).",
 				Required:    true,
+				PlanModifiers: []planmodifier.Int32{
+					int32planmodifier.RequiresReplace(),
+				},
 			},
 			"description": schema.StringAttribute{
 				Description: "Description text that describe the reservation, that will be added as an additional tag.",
@@ -87,17 +90,11 @@ func (r *reservationResource) Schema(_ context.Context, _ resource.SchemaRequest
 			},
 			"reverse_search": schema.BoolAttribute{
 				Description: "New networks will be created as close to the end of the block as possible?. Defaults to `false`.",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
-				},
+				Optional:    true,				 
 			},
 			"smallest_cidr": schema.BoolAttribute{
 				Description: "New networks will be created using the smallest possible available block? (e.g. it will not break up large CIDR blocks when possible) .Defaults to `false`.",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
-				},
+				Optional:    true,				
 			},
 			"id": schema.StringAttribute{
 				Description: "The unique identifier of the generated reservation.",

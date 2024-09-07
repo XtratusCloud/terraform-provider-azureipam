@@ -47,7 +47,7 @@ type reservationsModel struct {
 	SettledOn   timetypes.RFC3339 `tfsdk:"settled_on"`
 	SettledBy   types.String      `tfsdk:"settled_by"`
 	Status      types.String      `tfsdk:"status"`
-	Tags        map[string]string `tfsdk:"tags"`
+	Tags        types.Map         `tfsdk:"tags"`
 }
 
 // Metadata returns the data source type name.
@@ -142,7 +142,24 @@ func (d *reservationsDataSource) Read(ctx context.Context, req datasource.ReadRe
 	// Map response body to model
 	for _, reservation := range *reservations {
 		var reservationState reservationsModel
-		flattenreservationsModel(&reservation, &reservationState)
+		reservationState.Id = types.StringValue(reservation.Id)
+		reservationState.Cidr = types.StringValue(reservation.Cidr)
+		reservationState.Description = types.StringValue(reservation.Description)
+		reservationState.CreatedOn = timetypes.NewRFC3339TimeValue(time.Unix(int64(reservation.CreatedOn), 0))
+		reservationState.CreatedBy = types.StringValue(reservation.CreatedBy)
+		if reservation.SettledOn == nil {
+			reservationState.SettledOn = timetypes.NewRFC3339Null()
+		} else {
+			reservationState.SettledOn = timetypes.NewRFC3339TimeValue(time.Unix(int64(*reservation.SettledOn), 0))
+		}
+		if reservation.SettledBy == nil {
+			reservationState.SettledBy = types.StringNull()
+		} else {
+			reservationState.SettledBy = types.StringValue(*reservation.SettledBy)
+		}
+		reservationState.Status = types.StringValue(reservation.Status)
+		reservationState.Tags, _ = types.MapValueFrom(ctx, types.StringType, reservation.Tags)
+
 		state.Reservations = append(state.Reservations, reservationState)
 	}
 
@@ -173,24 +190,4 @@ func (d *reservationsDataSource) Configure(_ context.Context, req datasource.Con
 	}
 
 	d.client = client
-}
-
-func flattenreservationsModel(reservation *ipamclient.Reservation, model *reservationsModel) {
-	model.Id = types.StringValue(reservation.Id)
-	model.Cidr = types.StringValue(reservation.Cidr)
-	model.Description = types.StringValue(reservation.Description)
-	model.CreatedOn = timetypes.NewRFC3339TimeValue(time.Unix(int64(reservation.CreatedOn), 0))
-	model.CreatedBy = types.StringValue(reservation.CreatedBy)
-	if reservation.SettledOn == nil {
-		model.SettledOn = timetypes.NewRFC3339Null()
-	} else {
-		model.SettledOn = timetypes.NewRFC3339TimeValue(time.Unix(int64(*reservation.SettledOn), 0))
-	}
-	if reservation.SettledBy == nil {
-		model.SettledBy = types.StringNull()
-	} else {
-		model.SettledBy = types.StringValue(*reservation.SettledBy)
-	}
-	model.Status = types.StringValue(reservation.Status)
-
 }

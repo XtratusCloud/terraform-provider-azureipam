@@ -22,8 +22,8 @@ var (
 	_ provider.ProviderWithFunctions = &azureIpamProvider{}
 )
 
-// New is a helper function to simplify provider server and testing implementation.
-func New(version string) func() provider.Provider {
+// NewAzureIpamProvider is a helper function to simplify provider server and testing implementation.
+func NewAzureIpamProvider(version string) func() provider.Provider {
 	return func() provider.Provider {
 		return &azureIpamProvider{
 			version: version,
@@ -143,7 +143,7 @@ func (p *azureIpamProvider) Configure(ctx context.Context, req provider.Configur
 
 	tflog.Debug(ctx, "Creating AzureIpam client")
 	// Create a new AzureIpam client using the configuration values
-	client, err := ipamclient.NewClient(&apiUrl, &token)
+	client, err := ipamclient.NewClient(&apiUrl, &token, p.version=="test")
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create AzureIpam API Client",
@@ -174,6 +174,7 @@ func (p *azureIpamProvider) DataSources(ctx context.Context) []func() datasource
 func (p *azureIpamProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewReservationResource,
+		NewSpaceResource,
 	}
 }
 

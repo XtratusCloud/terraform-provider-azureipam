@@ -1,0 +1,58 @@
+[
+    {
+        "name": "au",
+        "desc": "Australia",
+        "blocks": [
+            {
+                "name": "AustraliaSoutheast",
+                "cidr": "10.83.0.0/16",
+                "vnets": [],
+                "externals": [
+                    {
+                        "name": "test",
+                        "desc": "external for tests",
+                        "cidr": "10.83.0.0/24"
+                    }
+                ],
+                "resv": []
+            },
+            {
+                "name": "AustraliaEast",
+                "cidr": "10.82.0.0/16",
+                "vnets": [
+                    {
+                        "id": "/subscriptions/554a3781-68fa-4429-b46a-f86664d836b4/resourceGroups/RG-WE-ALL-COMMS-01/providers/Microsoft.Network/virtualNetworks/vnet-we-d-terratest-hub-01",
+                        "active": true
+                    },
+                    {
+                        "id": "/subscriptions/49a789bb-9a8d-42be-8465-53aa77552366/resourceGroups/RG-WE-ALL-COMMS-01/providers/Microsoft.Network/virtualNetworks/vnet-we-a-testzavd-01",
+                        "active": true
+                    }
+                ],
+                "externals": [],
+                "resv": [
+                    {
+                        "id": "YYtppsvYQsRSBpZLsioZSV",
+                        "cidr": "10.82.6.0/23",
+                        "desc": "acceptance-test",
+                        "createdOn": 1725682902.9728477,
+                        "createdBy": "dummyemail@gmail.com",
+                        "settledOn": null,
+                        "settledBy": null,
+                        "status": "wait"
+                    },
+                    {
+                        "id": "hi3fxt9PeSpxhykfSszVUb",
+                        "cidr": "10.82.1.160/27",
+                        "desc": "vnet-we-c-arq3tier-01",
+                        "createdOn": 1699447867.567297,
+                        "createdBy": "spn:9fc2493a-b515-49a6-9d73-93e1bac5f6cc",
+                        "settledOn": 1712128721.8958313,
+                        "settledBy": "dummyemail@gmail.com",
+                        "status": "cancelledByUser"
+                    }
+                ]
+            }
+        ]
+    }
+]
