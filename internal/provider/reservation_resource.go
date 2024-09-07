@@ -21,8 +21,9 @@ import (
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
-	_ resource.Resource              = &reservationResource{}
-	_ resource.ResourceWithConfigure = &reservationResource{}
+	_ resource.Resource                = &reservationResource{}
+	_ resource.ResourceWithConfigure   = &reservationResource{}
+	_ resource.ResourceWithImportState = &reservationResource{}
 )
 
 // NewReservationResource is a helper function to simplify the provider implementation.
@@ -90,11 +91,11 @@ func (r *reservationResource) Schema(_ context.Context, _ resource.SchemaRequest
 			},
 			"reverse_search": schema.BoolAttribute{
 				Description: "New networks will be created as close to the end of the block as possible?. Defaults to `false`.",
-				Optional:    true,				 
+				Optional:    true,
 			},
 			"smallest_cidr": schema.BoolAttribute{
 				Description: "New networks will be created using the smallest possible available block? (e.g. it will not break up large CIDR blocks when possible) .Defaults to `false`.",
-				Optional:    true,				
+				Optional:    true,
 			},
 			"id": schema.StringAttribute{
 				Description: "The unique identifier of the generated reservation.",
@@ -182,7 +183,7 @@ func (r *reservationResource) Read(ctx context.Context, req resource.ReadRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
- 
+
 	//read reservation
 	reservation, err := r.client.FindReservationById(
 		state.Id.ValueString(),

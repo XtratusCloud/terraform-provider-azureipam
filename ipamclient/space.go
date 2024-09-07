@@ -58,10 +58,8 @@ func (c *Client) CreateSpace(name string, description string) (*Space, error) {
 
 	//construct body
 	request := &spaceRequest{
-		Name: name,
-	}
-	if description != "" {
-		request.Description = description
+		Name:        name,
+		Description: description,
 	}
 	rb, err := json.Marshal(request)
 	if err != nil {
@@ -86,6 +84,54 @@ func (c *Client) CreateSpace(name string, description string) (*Space, error) {
 	}
 
 	return &space, nil
+}
+
+func (c *Client) UpdateSpace(name string, newName *string, newDescription *string) (*Space, error) {
+
+	//construct body
+	var request = []spaceUpdateRequest{}
+	if newName != nil {
+		request = append(request, spaceUpdateRequest{
+			Op:    "replace",
+			Path:  "/name",
+			Value: *newName,
+		})
+	}
+	if newDescription != nil {
+		request = append(request, spaceUpdateRequest{
+			Op:    "replace",
+			Path:  "/desc",
+			Value: *newDescription,
+		})
+	}
+
+	rb, err := json.Marshal(request)
+	if err != nil {
+		return nil, err
+	}
+
+	//prepare request
+	req, err := http.NewRequest("PATCH", fmt.Sprintf("%s/api/spaces/%s", c.HostURL, name), strings.NewReader(string(rb)))
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.doRequest(req)
+	if err != nil {
+		return nil, errors.New(string(response) + ";inner error: " + err.Error())
+	}
+
+	// //error if response contains a json
+	// var jsResponse json.RawMessage
+	// if  json.Unmarshal([]byte(response), &jsResponse) == nil {
+	// 	return nil, errors.New(string(response))
+	// }
+
+	//read and return the updated space
+	retVal, err := c.GetSpace(*newName, false, false)
+	if err != nil {
+		return nil, err
+	}
+	return retVal, nil
 }
 
 // DeleteSpace- Deletes a space

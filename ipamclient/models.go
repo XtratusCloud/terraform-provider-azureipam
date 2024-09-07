@@ -16,14 +16,14 @@ type Reservation struct {
 }
 
 type ReservationLite struct {
-	Id          string  `json:"id,omitempty"`
-	Cidr        string  `json:"cidr,omitempty"`
-	Description string  `json:"desc,omitempty"`
-	CreatedOn   float64 `json:"createdOn,omitempty"`
-	CreatedBy   string  `json:"createdBy,omitempty"`
-	SettledOn   float64 `json:"settledOn,omitempty"`
-	SettledBy   string  `json:"settledBy,omitempty"`
-	Status      string  `json:"status,omitempty"`
+	Id          string   `json:"id,omitempty"`
+	Cidr        string   `json:"cidr,omitempty"`
+	Description string   `json:"desc,omitempty"`
+	CreatedOn   float64  `json:"createdOn,omitempty"`
+	CreatedBy   string   `json:"createdBy,omitempty"`
+	SettledOn   *float64 `json:"settledOn,omitempty"`
+	SettledBy   *string  `json:"settledBy,omitempty"`
+	Status      string   `json:"status,omitempty"`
 }
 
 type reservationRequest struct {
@@ -45,6 +45,12 @@ type Space struct {
 type spaceRequest struct {
 	Name        string `json:"name"`
 	Description string `json:"desc"`
+}
+
+type spaceUpdateRequest struct {
+	Op    string `json:"op"`
+	Path  string `json:"path"`
+	Value string `json:"value"`
 }
 
 //Block

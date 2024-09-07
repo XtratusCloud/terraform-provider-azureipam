@@ -313,7 +313,7 @@ func (d *spacesDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 
 	// Map response body to model
 	for _, space := range *spaces {
-		state.Spaces = append(state.Spaces, flattenSpace(&space))
+		state.Spaces = append(state.Spaces, flattenSpaceLite(&space))
 	}
 
 	// Set state
@@ -344,7 +344,7 @@ func (d *spacesDataSource) Configure(_ context.Context, req datasource.Configure
 	d.client = client
 }
 
-func flattenSpace(space *ipamclient.Space) spaceModel {
+func flattenSpaceLite(space *ipamclient.Space) spaceModel {
 	var model spaceModel
 
 	model.Name = types.StringValue(space.Name)
@@ -427,12 +427,12 @@ func flattenVnet(vnet *ipamclient.Vnet) vnetModel {
 	if vnet.Size == nil {
 		model.Size = types.Float64Null()
 	} else {
-		types.Float64Value(*vnet.Size)
+		model.Size = types.Float64Value(*vnet.Size)
 	}
 	if vnet.Used == nil {
 		model.Used = types.Float64Null()
 	} else {
-		types.Float64Value(*vnet.Used)
+		model.Used = types.Float64Value(*vnet.Used)
 	}
 
 	return model
@@ -446,12 +446,12 @@ func flattenSubnet(subnet *ipamclient.Subnet) subnetModel {
 	if subnet.Size == nil {
 		model.Size = types.Float64Null()
 	} else {
-		types.Float64Value(*subnet.Size)
+		model.Size = types.Float64Value(*subnet.Size)
 	}
 	if subnet.Used == nil {
 		model.Used = types.Float64Null()
 	} else {
-		types.Float64Value(*subnet.Used)
+		model.Used = types.Float64Value(*subnet.Used)
 	}
 
 	return model
@@ -474,8 +474,17 @@ func flattenReservationLite(reservation *ipamclient.ReservationLite) reservation
 	model.Description = types.StringValue(reservation.Description)
 	model.CreatedOn = timetypes.NewRFC3339TimeValue(time.Unix(int64(reservation.CreatedOn), 0))
 	model.CreatedBy = types.StringValue(reservation.CreatedBy)
-	model.SettledOn = timetypes.NewRFC3339TimeValue(time.Unix(int64(reservation.CreatedOn), 0))
-	model.SettledBy = types.StringValue(reservation.SettledBy)
+	if reservation.SettledOn == nil {
+		model.SettledOn = timetypes.NewRFC3339Null()
+	} else {
+		model.SettledOn = timetypes.NewRFC3339TimeValue(time.Unix(int64(*reservation.SettledOn), 0))
+	}
+	if reservation.SettledBy == nil {
+		model.SettledBy = types.StringNull()
+	} else {
+		model.SettledBy = types.StringValue(*reservation.SettledBy)
+
+	}
 	model.Status = types.StringValue(reservation.Status)
 
 	return model
