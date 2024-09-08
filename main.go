@@ -41,10 +41,9 @@ func main() {
 		// -provider-name flag or set its value to the updated provider name.
 		Address: "registry.terraform.io/XtratusCloud/azureipam",
 		Debug:   debug,
-	}
+	} 
 
 	err := providerserver.Serve(context.Background(), provider.NewAzureIpamProvider(version), opts)
-
 	if err != nil {
 		log.Fatal(err.Error())
 	}

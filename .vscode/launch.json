@@ -10,7 +10,7 @@
             "program": "${workspaceFolder}",
             "env": {},
             "args": [
-                "--debug",
+                "-debug",
             ],
             "showLog": true,
             "envFile": "${workspaceFolder}/.vscode/private.env"

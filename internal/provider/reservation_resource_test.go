@@ -1,8 +1,10 @@
 package provider
 
 import (
+	"errors"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/jarcoal/httpmock"
@@ -50,7 +52,14 @@ func TestAccReservationResource(t *testing.T) {
 					resource.TestCheckResourceAttr("azureipam_reservation.test", "id", "YYtppsvYQsRSBpZLsioZSV"),
 					resource.TestCheckResourceAttr("azureipam_reservation.test", "cidr", "10.82.6.0/23"),
 					resource.TestCheckResourceAttr("azureipam_reservation.test", "description", "acceptance-test"),
-					resource.TestCheckResourceAttr("azureipam_reservation.test", "created_on", "2024-09-07T06:21:42+02:00"),
+					resource.TestCheckResourceAttrWith("azureipam_reservation.test", "created_on", func(value string) error {
+						expected, _ := time.Parse(time.RFC3339, "2024-09-07T06:21:42+02:00")
+						current, _ := time.Parse(time.RFC3339, value)
+						if current.Equal(expected) {
+							return nil
+						}
+						return errors.New("expected " + expected.String() + " got " + current.String())
+					}),
 					resource.TestCheckResourceAttr("azureipam_reservation.test", "created_by", "dummyemail@gmail.com"),
 					resource.TestCheckNoResourceAttr("azureipam_reservation.test", "settled_on"),
 					resource.TestCheckNoResourceAttr("azureipam_reservation.test", "settled_by"),
@@ -61,10 +70,10 @@ func TestAccReservationResource(t *testing.T) {
 			},
 			// ImportState testing
 			{
-				ResourceName:      "azureipam_reservation.test",
-				ImportState:       true,
-				ImportStateVerify: true, 
-				ImportStateVerifyIgnore: []string{"reverse_search","smallest_cidr"},
+				ResourceName:            "azureipam_reservation.test",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"reverse_search", "smallest_cidr"},
 			},
 			// Update  NOT ALLOWED by provider
 

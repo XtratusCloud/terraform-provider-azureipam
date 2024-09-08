@@ -1,8 +1,10 @@
 package provider
 
 import (
+	"errors"
 	"net/http"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/jarcoal/httpmock"
@@ -64,7 +66,14 @@ func TestAccSpacesWithoutUtilizationAndVnetDataSource(t *testing.T) {
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.id", "YYtppsvYQsRSBpZLsioZSV"),
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.cidr", "10.82.6.0/23"),
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.description", "acceptance-test"),
-					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.created_on", "2024-09-07T06:21:42+02:00"),
+					resource.TestCheckResourceAttrWith("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.created_on", func(value string) error {
+						expected, _ := time.Parse(time.RFC3339, "2024-09-07T06:21:42+02:00")
+						current, _ := time.Parse(time.RFC3339, value)
+						if current.Equal(expected) {
+							return nil
+						}
+						return errors.New("expected " + expected.String() + " got " + current.String())
+					}),					 
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.created_by", "dummyemail@gmail.com"),
 					resource.TestCheckNoResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.settled_on"),
 					resource.TestCheckNoResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.settled_by"),
@@ -73,9 +82,23 @@ func TestAccSpacesWithoutUtilizationAndVnetDataSource(t *testing.T) {
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.id", "hi3fxt9PeSpxhykfSszVUb"),
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.cidr", "10.82.1.160/27"),
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.description", "vnet-we-c-arq3tier-01"),
-					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.created_on", "2023-11-08T13:51:07+01:00"),
+					resource.TestCheckResourceAttrWith("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.created_on", func(value string) error {
+						expected, _ := time.Parse(time.RFC3339, "2023-11-08T13:51:07+01:00")
+						current, _ := time.Parse(time.RFC3339, value)
+						if current.Equal(expected) {
+							return nil
+						}
+						return errors.New("expected " + expected.String() + " got " + current.String())
+					}), 
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.created_by", "spn:9fc2493a-b515-49a6-9d73-93e1bac5f6cc"),
-					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.settled_on", "2024-04-03T09:18:41+02:00"),
+					resource.TestCheckResourceAttrWith("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.settled_on", func(value string) error {
+						expected, _ := time.Parse(time.RFC3339, "2024-04-03T09:18:41+02:00")
+						current, _ := time.Parse(time.RFC3339, value)
+						if current.Equal(expected) {
+							return nil
+						}
+						return errors.New("expected " + expected.String() + " got " + current.String())
+					}), 
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.settled_by", "dummyemail@gmail.com"),
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.status", "cancelledByUser"),
 				),
@@ -183,7 +206,14 @@ func TestAccSpacesWithUtilizationAndVnetDataSource(t *testing.T) {
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.id", "YYtppsvYQsRSBpZLsioZSV"),
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.cidr", "10.82.6.0/23"),
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.description", "acceptance-test"),
-					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.created_on", "2024-09-07T06:21:42+02:00"),
+					resource.TestCheckResourceAttrWith("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.created_on", func(value string) error {
+						expected, _ := time.Parse(time.RFC3339, "2024-09-07T06:21:42+02:00")
+						current, _ := time.Parse(time.RFC3339, value)
+						if current.Equal(expected) {
+							return nil
+						}
+						return errors.New("expected " + expected.String() + " got " + current.String())
+					}), 
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.created_by", "dummyemail@gmail.com"),
 					resource.TestCheckNoResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.settled_on"),
 					resource.TestCheckNoResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.0.settled_by"),
@@ -192,9 +222,23 @@ func TestAccSpacesWithUtilizationAndVnetDataSource(t *testing.T) {
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.id", "hi3fxt9PeSpxhykfSszVUb"),
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.cidr", "10.82.1.160/27"),
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.description", "vnet-we-c-arq3tier-01"),
-					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.created_on", "2023-11-08T13:51:07+01:00"),
+					resource.TestCheckResourceAttrWith("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.created_on", func(value string) error {
+						expected, _ := time.Parse(time.RFC3339, "2023-11-08T13:51:07+01:00")
+						current, _ := time.Parse(time.RFC3339, value)
+						if current.Equal(expected) {
+							return nil
+						}
+						return errors.New("expected " + expected.String() + " got " + current.String())
+					}), 
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.created_by", "spn:9fc2493a-b515-49a6-9d73-93e1bac5f6cc"),
-					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.settled_on", "2024-04-03T09:18:41+02:00"),
+					resource.TestCheckResourceAttrWith("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.settled_on", func(value string) error {
+						expected, _ := time.Parse(time.RFC3339, "2024-04-03T09:18:41+02:00")
+						current, _ := time.Parse(time.RFC3339, value)
+						if current.Equal(expected) {
+							return nil
+						}
+						return errors.New("expected " + expected.String() + " got " + current.String())
+					}), 
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.settled_by", "dummyemail@gmail.com"),
 					resource.TestCheckResourceAttr("data.azureipam_spaces.test", "spaces.0.blocks.1.reservations.1.status", "cancelledByUser"),
 				),
