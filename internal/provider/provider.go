@@ -41,8 +41,9 @@ type azureIpamProvider struct {
 
 // azureIpamProviderModel describes the provider data model.
 type azureIpamProviderModel struct {
-	ApiUrl types.String `tfsdk:"api_url"`
-	Token  types.String `tfsdk:"token"`
+	ApiUrl                      types.String `tfsdk:"api_url"`
+	Token                       types.String `tfsdk:"token"`
+	SkipCertificateVerification types.Bool   `tfsdk:"skip_cert_verification"`
 }
 
 // Metadata returns the provider type name.
@@ -58,12 +59,16 @@ func (p *azureIpamProvider) Schema(ctx context.Context, req provider.SchemaReque
 		Attributes: map[string]schema.Attribute{
 			"api_url": schema.StringAttribute{
 				MarkdownDescription: "The root url of the APIM REST API solution to be used, without the /api url suffix. Must be also assigned at AZUREIPAM_API_URL environment variable.",
-				Optional: true,
+				Optional:            true,
 			},
 			"token": schema.StringAttribute{
 				MarkdownDescription: "The bearer token to be used when authenticating to the API. Must be also assigned at AZUREIPAM_TOKEN environment variable.",
-				Optional: true,
-				Sensitive: true,
+				Optional:            true,
+				Sensitive:           true,
+			},
+			"skip_cert_verification": schema.BoolAttribute{
+				MarkdownDescription: "Specifies it the certificate chain validation must be skipped calling the API endpoint. Default to true to maintain current functionality and avoid a version breaking change.",
+				Optional:            true,
 			},
 		},
 	}
@@ -93,7 +98,7 @@ func (p *azureIpamProvider) Configure(ctx context.Context, req provider.Configur
 	if config.Token.IsUnknown() {
 		resp.Diagnostics.AddAttributeError(
 			path.Root("token"),
-			"Unknown AzureIpam API access tokan",
+			"Unknown AzureIpam API access token",
 			"The provider cannot create the AzureIpam API client as there is an unknown configuration value for the AzureIpam API access token. "+
 				"Either target apply the source of the value first, set the value statically in the configuration, or use the AZUREIPAM_TOKEN environment variable.",
 		)
@@ -137,13 +142,23 @@ func (p *azureIpamProvider) Configure(ctx context.Context, req provider.Configur
 		return
 	}
 
+	var skipCertVerification bool
+	if p.version == "test" {
+		skipCertVerification = false //always false for acceptance tests, to enforce the http.DefaultTransport usage
+	} else if config.SkipCertificateVerification.IsNull() {
+		skipCertVerification = true //true if not specified, to maintain current functionality
+	} else {
+		skipCertVerification = config.SkipCertificateVerification.ValueBool()
+	}
+
 	ctx = tflog.SetField(ctx, "azureipam_api_url", apiUrl)
 	ctx = tflog.SetField(ctx, "azureipam_token", token)
+	ctx = tflog.SetField(ctx, "azureipam_skip_cert_verification", skipCertVerification)
 	ctx = tflog.MaskFieldValuesWithFieldKeys(ctx, "azureipam_token")
 
 	tflog.Debug(ctx, "Creating AzureIpam client")
 	// Create a new AzureIpam client using the configuration values
-	client, err := ipamclient.NewClient(&apiUrl, &token, p.version=="test")
+	client, err := ipamclient.NewClient(&apiUrl, &token, skipCertVerification)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create AzureIpam API Client",

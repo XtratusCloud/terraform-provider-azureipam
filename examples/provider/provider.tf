@@ -22,6 +22,7 @@ data "external" "get_access_token" {
 
 # Configure the Azure IPAM provider
 provider "azureipam" {
-  api_url = local.ipam_url
-  token   = data.external.get_access_token.result.accessToken
+  api_url                = local.ipam_url
+  token                  = data.external.get_access_token.result.accessToken
+  skip_cert_verification = false
 }

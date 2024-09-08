@@ -16,14 +16,14 @@ type Client struct {
 }
 
 // NewClient - Construct a new HTTP Client to interact with the APIM REST API
-func NewClient(host, authToken *string, defaultHttpTransport bool) (*Client, error) {
+func NewClient(host, authToken *string, SkipCertificateVerification bool) (*Client, error) {
 	var tr http.RoundTripper
-	if defaultHttpTransport {
-		tr = http.DefaultTransport //Allow to set http.DefaultTransport to allow Acceptance tests with [jarcoal/httpmock](https://github.com/jarcoal/httpmock)
-	} else {
+	if SkipCertificateVerification {
 		tr = &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // By default skip tls certificate verification
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, //Skip tls certificate verification if requested
 		}
+	} else {
+		tr = http.DefaultTransport //Use http.DefaultTransport, needed to allow acceptance tests with [jarcoal/httpmock](https://github.com/jarcoal/httpmock)
 	}
 	c := Client{
 		HTTPClient: &http.Client{Timeout: 10 * time.Second, Transport: tr},
