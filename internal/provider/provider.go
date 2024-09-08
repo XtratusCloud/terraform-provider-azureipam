@@ -190,6 +190,7 @@ func (p *azureIpamProvider) Resources(ctx context.Context) []func() resource.Res
 	return []func() resource.Resource{
 		NewReservationResource,
 		NewSpaceResource,
+		NewBlockResource,
 	}
 }
 

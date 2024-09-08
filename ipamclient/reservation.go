@@ -8,6 +8,14 @@ import (
 	"strings"
 )
 
+//internal Models
+type reservationRequest struct {
+	Size          int    `json:"size"`
+	Description   string `json:"desc"`
+	ReverseSearch bool   `json:"reverse_search"`
+	SmallestCidr  bool   `json:"smallest_cidr"`
+}
+
 // GetReservations - Returns all existing reservations by space and block
 func (c *Client) GetReservations(space, block string, includeSettled bool) (*[]Reservation, error) {
 	//prepare request

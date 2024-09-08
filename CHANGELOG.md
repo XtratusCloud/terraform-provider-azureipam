@@ -33,11 +33,13 @@
 
 ## 2024.09.01 - v1.1.0
 ### Added
++ migration from [SDKv2](https://developer.hashicorp.com/terraform/plugin/sdkv2) to [Terraform Plugin Framework](https://developer.hashicorp.com/terraform/plugin/framework)
++ templates for [tfplugindocs](https://github.com/hashicorp/terraform-plugin-docs), to allow Terraform plugin doc generation
++ acceptance tests.
++ provider attribute `skip_cert_verification` to allow to increase the security in API calls.
 + data resource `azureipam_spaces` to get a list of all API spaces with related information.
 + resource `azureipam_space` to allow operations with IPAM spaces.
-+ Provider attribute `skip_cert_verification` to allow to increase the security in API calls.
-+ Acceptance tests. 
-- 
++ resource `azureipam_block` to allow operations with IPAM blocks.
 
 ### Fixed
-+ None
++ [tfplugindocs](https://github.com/hashicorp/terraform-plugin-docs) implementation and generation

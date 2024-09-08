@@ -1,0 +1,26 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+## Example Usage
+
+{{ tffile (printf "examples/resources/%s/resource.tf" .Name)}}
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+Blocks can be imported using the name of the space and the name of the block, e.g.
+
+```shell
+terraform import azureipam_space.new au/AustraliaNorth
+```
+
+-> This ID format is unique to Terraform and is composed of the space name and the block name in the format `{SpaceName}/{BlockName}`.

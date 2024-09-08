@@ -344,13 +344,13 @@ func (d *spacesDataSource) Configure(_ context.Context, req datasource.Configure
 	d.client = client
 }
 
-func flattenSpaceLite(space *ipamclient.Space) spaceModel {
+func flattenSpaceLite(space *ipamclient.SpaceInfo) spaceModel {
 	var model spaceModel
 
 	model.Name = types.StringValue(space.Name)
 	model.Description = types.StringValue(space.Description)
 	for _, block := range space.Blocks {
-		model.Blocks = append(model.Blocks, flattenBlock(&block))
+		model.Blocks = append(model.Blocks, flattenBlockInfo(&block))
 	}
 	if space.Size == nil {
 		model.Size = types.Float64Null()
@@ -366,7 +366,7 @@ func flattenSpaceLite(space *ipamclient.Space) spaceModel {
 	return model
 }
 
-func flattenBlock(block *ipamclient.Block) blockModel {
+func flattenBlockInfo(block *ipamclient.BlockInfo) blockModel {
 	var model blockModel
 
 	model.Name = types.StringValue(block.Name)
@@ -378,7 +378,7 @@ func flattenBlock(block *ipamclient.Block) blockModel {
 		model.Externals = append(model.Externals, flattenExternal(&external))
 	}
 	for _, reservation := range block.Reservations {
-		model.Reservations = append(model.Reservations, flattenReservationLite(&reservation))
+		model.Reservations = append(model.Reservations, flattenReservationInfo(&reservation))
 	}
 	if block.Size == nil {
 		model.Size = types.Float64Null()
@@ -394,7 +394,7 @@ func flattenBlock(block *ipamclient.Block) blockModel {
 	return model
 }
 
-func flattenVnet(vnet *ipamclient.Vnet) vnetModel {
+func flattenVnet(vnet *ipamclient.VnetInfo) vnetModel {
 	var model vnetModel
 
 	model.Id = types.StringValue(vnet.Id)
@@ -438,7 +438,7 @@ func flattenVnet(vnet *ipamclient.Vnet) vnetModel {
 	return model
 }
 
-func flattenSubnet(subnet *ipamclient.Subnet) subnetModel {
+func flattenSubnet(subnet *ipamclient.SubnetInfo) subnetModel {
 	var model subnetModel
 
 	model.Name = types.StringValue(subnet.Name)
@@ -456,7 +456,7 @@ func flattenSubnet(subnet *ipamclient.Subnet) subnetModel {
 
 	return model
 }
-func flattenExternal(external *ipamclient.External) externalModel {
+func flattenExternal(external *ipamclient.ExternalInfo) externalModel {
 	var model externalModel
 
 	model.Name = types.StringValue(external.Name)
@@ -466,7 +466,7 @@ func flattenExternal(external *ipamclient.External) externalModel {
 	return model
 }
 
-func flattenReservationLite(reservation *ipamclient.ReservationLite) reservationsLiteModel {
+func flattenReservationInfo(reservation *ipamclient.ReservationInfo) reservationsLiteModel {
 	var model reservationsLiteModel
 
 	model.Id = types.StringValue(reservation.Id)

@@ -8,8 +8,19 @@ import (
 	"strings"
 )
 
+//internal Models
+type spaceRequest struct {
+	Name        string `json:"name"`
+	Description string `json:"desc"`
+}
+type spaceUpdateRequest struct {
+	Op    string `json:"op"`
+	Path  string `json:"path"`
+	Value string `json:"value"`
+}
+
 // GetSpaces - Returns all existing spaces
-func (c *Client) GetSpaces(expand bool, appendUtilization bool) (*[]Space, error) {
+func (c *Client) GetSpaces(expand bool, appendUtilization bool) (*[]SpaceInfo, error) {
 	//prepare request
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/spaces?expand=%t&utilization=%t", c.HostURL, expand, appendUtilization), nil)
 	if err != nil {
@@ -21,7 +32,7 @@ func (c *Client) GetSpaces(expand bool, appendUtilization bool) (*[]Space, error
 	}
 
 	//process response
-	var spacesInfo []Space
+	var spacesInfo []SpaceInfo
 	err = json.Unmarshal(response, &spacesInfo)
 	if err != nil {
 		return nil, err
@@ -31,7 +42,7 @@ func (c *Client) GetSpaces(expand bool, appendUtilization bool) (*[]Space, error
 }
 
 // GetSpace - Returns a specifc space by name
-func (c *Client) GetSpace(name string, expand bool, appendUtilization bool) (*Space, error) {
+func (c *Client) GetSpace(name string, expand bool, appendUtilization bool) (*SpaceInfo, error) {
 
 	//prepare request
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/spaces/%s?expand=%t&utilization=%t", c.HostURL, name, expand, appendUtilization), nil)
@@ -44,7 +55,7 @@ func (c *Client) GetSpace(name string, expand bool, appendUtilization bool) (*Sp
 	}
 
 	//process response
-	var spaceInfo Space
+	var spaceInfo SpaceInfo
 	err = json.Unmarshal(response, &spaceInfo)
 	if err != nil {
 		return nil, err
@@ -54,7 +65,7 @@ func (c *Client) GetSpace(name string, expand bool, appendUtilization bool) (*Sp
 }
 
 // CreateSpace - Create new space
-func (c *Client) CreateSpace(name string, description string) (*Space, error) {
+func (c *Client) CreateSpace(name string, description string) (*SpaceInfo, error) {
 
 	//construct body
 	request := &spaceRequest{
@@ -77,7 +88,7 @@ func (c *Client) CreateSpace(name string, description string) (*Space, error) {
 	}
 
 	//process response
-	space := Space{}
+	space := SpaceInfo{}
 	err = json.Unmarshal(response, &space)
 	if err != nil {
 		return nil, err
@@ -86,7 +97,7 @@ func (c *Client) CreateSpace(name string, description string) (*Space, error) {
 	return &space, nil
 }
 
-func (c *Client) UpdateSpace(name string, newName *string, newDescription *string) (*Space, error) {
+func (c *Client) UpdateSpace(name string, newName *string, newDescription *string) (*SpaceInfo, error) {
 
 	//construct body
 	var request = []spaceUpdateRequest{}
@@ -119,12 +130,6 @@ func (c *Client) UpdateSpace(name string, newName *string, newDescription *strin
 	if err != nil {
 		return nil, errors.New(string(response) + ";inner error: " + err.Error())
 	}
-
-	// //error if response contains a json
-	// var jsResponse json.RawMessage
-	// if  json.Unmarshal([]byte(response), &jsResponse) == nil {
-	// 	return nil, errors.New(string(response))
-	// }
 
 	//read and return the updated space
 	retVal, err := c.GetSpace(*newName, false, false)

@@ -217,7 +217,7 @@ func (r *spaceResource) ImportState(ctx context.Context, req resource.ImportStat
 	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
 }
 
-func flattenSpace(space *ipamclient.Space, model *spaceResourceModel) {
+func flattenSpace(space *ipamclient.SpaceInfo, model *spaceResourceModel) {
 	model.Name = types.StringValue(space.Name)
 	model.Description = types.StringValue(space.Description)
 }
