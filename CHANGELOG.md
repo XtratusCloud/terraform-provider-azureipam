@@ -33,7 +33,11 @@
 
 ## 2024.09.01 - v1.1.0
 ### Added
-+ data resource `azureipam_spaces` to get a list of all Spaces.
++ data resource `azureipam_spaces` to get a list of all API spaces with related information.
++ resource `azureipam_space` to allow operations with IPAM spaces.
++ Provider attribute `skip_cert_verification` to allow to increase the security in API calls.
++ Acceptance tests. 
+- 
 
 ### Fixed
 + None
