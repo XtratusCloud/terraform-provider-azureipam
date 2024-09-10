@@ -221,3 +221,6 @@ func flattenSpace(space *ipamclient.SpaceInfo, model *spaceResourceModel) {
 	model.Name = types.StringValue(space.Name)
 	model.Description = types.StringValue(space.Description)
 }
+
+
+

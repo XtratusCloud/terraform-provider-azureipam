@@ -40,6 +40,8 @@
 + data resource `azureipam_spaces` to get a list of all API spaces with related information.
 + resource `azureipam_space` to allow operations with IPAM spaces.
 + resource `azureipam_block` to allow operations with IPAM blocks.
++ data resource `azureipam_blocks` to get a list of all API blocks in the specified space with related information.
+
 
 ### Fixed
 + [tfplugindocs](https://github.com/hashicorp/terraform-plugin-docs) implementation and generation

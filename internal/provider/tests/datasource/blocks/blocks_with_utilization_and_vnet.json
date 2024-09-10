@@ -1,0 +1,100 @@
+[
+    {
+        "name": "AustraliaSoutheast",
+        "cidr": "10.83.0.0/16",
+        "vnets": [],
+        "externals": [
+            {
+                "name": "test",
+                "desc": "external for tests",
+                "cidr": "10.83.0.0/24"
+            }
+        ],
+        "resv": [],
+        "size": 65536,
+        "used": 256
+    },
+    {
+        "name": "AustraliaEast",
+        "cidr": "10.82.0.0/16",
+        "vnets": [
+            {
+                "name": "vnet-we-d-terratest-hub-01",
+                "id": "/subscriptions/554a3781-68fa-4429-b46a-f86664d836b4/resourceGroups/RG-WE-ALL-COMMS-01/providers/Microsoft.Network/virtualNetworks/vnet-we-d-terratest-hub-01",
+                "prefixes": [
+                    "10.82.0.0/24"
+                ],
+                "subnets": [
+                    {
+                        "name": "main",
+                        "prefix": "10.82.0.0/25",
+                        "size": 128,
+                        "used": 5
+                    },
+                    {
+                        "name": "GatewaySubnet",
+                        "prefix": "10.82.0.128/28",
+                        "size": 16,
+                        "used": 6
+                    }
+                ],
+                "resource_group": "rg-we-all-comms-01",
+                "subscription_id": "554a3781-68fa-4429-b46a-f86664d836b4",
+                "tenant_id": "562871ed-4b14-46b8-899a-0c5ffa5e4272",
+                "size": 256,
+                "used": 144
+            },
+            {
+                "name": "vnet-we-a-testzavd-01",
+                "id": "/subscriptions/49a789bb-9a8d-42be-8465-53aa77552366/resourceGroups/RG-WE-ALL-COMMS-01/providers/Microsoft.Network/virtualNetworks/vnet-we-a-testzavd-01",
+                "prefixes": [
+                    "10.82.1.224/27"
+                ],
+                "subnets": [
+                    {
+                        "name": "snet-we-a-private-01",
+                        "prefix": "10.82.1.224/29",
+                        "size": 8,
+                        "used": 5
+                    },
+                    {
+                        "name": "snet-we-a-sessionhost-01",
+                        "prefix": "10.82.1.240/28",
+                        "size": 16,
+                        "used": 5
+                    }
+                ],
+                "resource_group": "rg-we-all-comms-01",
+                "subscription_id": "49a789bb-9a8d-42be-8465-53aa77552366",
+                "tenant_id": "562871ed-4b14-46b8-899a-0c5ffa5e4272",
+                "size": 32,
+                "used": 24
+            }
+        ],
+        "externals": [],
+        "resv": [
+            {
+                "id": "YYtppsvYQsRSBpZLsioZSV",
+                "cidr": "10.82.6.0/23",
+                "desc": "acceptance-test",
+                "createdOn": 1725682902.9728477,
+                "createdBy": "dummyemail@gmail.com",
+                "settledOn": null,
+                "settledBy": null,
+                "status": "wait"
+            },
+            {
+                "id": "hi3fxt9PeSpxhykfSszVUb",
+                "cidr": "10.82.1.160/27",
+                "desc": "vnet-we-c-arq3tier-01",
+                "createdOn": 1699447867.567297,
+                "createdBy": "spn:9fc2493a-b515-49a6-9d73-93e1bac5f6cc",
+                "settledOn": 1712128721.8958313,
+                "settledBy": "dummyemail@gmail.com",
+                "status": "cancelledByUser"
+            }
+        ],
+        "size": 65536,
+        "used": 288
+    }
+]
