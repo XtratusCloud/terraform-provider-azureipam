@@ -8,12 +8,13 @@ import (
 	"strings"
 )
 
-//internal Models
+// internal Models
 type reservationRequest struct {
-	Size          int    `json:"size"`
-	Description   string `json:"desc"`
-	ReverseSearch bool   `json:"reverse_search"`
-	SmallestCidr  bool   `json:"smallest_cidr"`
+	Blocks        []string `json:"blocks"`
+	Size          int      `json:"size"`
+	Description   *string  `json:"desc"`
+	ReverseSearch bool     `json:"reverse_search"`
+	SmallestCidr  bool     `json:"smallest_cidr"`
 }
 
 // GetReservations - Returns all existing reservations by space and block
@@ -83,15 +84,14 @@ func (c *Client) GetReservation(space string, block string, id string) (*Reserva
 }
 
 // CreateReservation - Create new reservation
-func (c *Client) CreateReservation(space, block, description string, size int, reverseSearch bool, smallestCidr bool) (*Reservation, error) {
+func (c *Client) CreateReservation(space string, blocks []string, description *string, size int, reverseSearch bool, smallestCidr bool) (*Reservation, error) {
 	//construct body
 	request := &reservationRequest{
+		Blocks:        blocks,
 		Size:          size,
 		ReverseSearch: reverseSearch,
 		SmallestCidr:  smallestCidr,
-	}
-	if description != "" {
-		request.Description = description
+		Description:   description,
 	}
 	rb, err := json.Marshal(request)
 	if err != nil {
@@ -99,7 +99,7 @@ func (c *Client) CreateReservation(space, block, description string, size int, r
 	}
 
 	//prepare request
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/api/spaces/%s/blocks/%s/reservations", c.HostURL, space, block), strings.NewReader(string(rb)))
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/api/spaces/%s/reservations", c.HostURL, space), strings.NewReader(string(rb)))
 	if err != nil {
 		return nil, err
 	}

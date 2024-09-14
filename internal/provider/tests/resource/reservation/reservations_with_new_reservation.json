@@ -2,8 +2,8 @@
     {
         "id": "YYtppsvYQsRSBpZLsioZSV",
         "space": "au",
-        "block": "AustraliaEast",
-        "cidr": "10.82.6.0/23",
+        "block": "AustraliaSoutheast",
+        "cidr": "10.83.2.0/23",
         "desc": "acceptance-test",
         "createdOn": 1725682902.9728477,
         "createdBy": "dummyemail@gmail.com",

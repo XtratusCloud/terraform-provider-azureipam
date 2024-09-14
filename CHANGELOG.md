@@ -31,17 +31,21 @@
 + Reservation is not longer deleted, removed error prevention when not found in redeployments. Also removed `Special Considerations` section in documentation.
 
 
-## 2024.09.01 - v1.1.0
+## 2024.09.15 - v2.0.0
 ### Added
 + migration from [SDKv2](https://developer.hashicorp.com/terraform/plugin/sdkv2) to [Terraform Plugin Framework](https://developer.hashicorp.com/terraform/plugin/framework)
 + templates for [tfplugindocs](https://github.com/hashicorp/terraform-plugin-docs), to allow Terraform plugin doc generation
 + acceptance tests.
 + provider attribute `skip_cert_verification` to allow to increase the security in API calls.
-+ data resource `azureipam_spaces` to get a list of all API spaces with related information.
-+ resource `azureipam_space` to allow operations with IPAM spaces.
-+ resource `azureipam_block` to allow operations with IPAM blocks.
-+ data resource `azureipam_blocks` to get a list of all API blocks in the specified space with related information.
++ data resource `azureipam_spaces` to get a list of all spaces with related information.
++ resource `azureipam_space` to allow operations with spaces.
++ resource `azureipam_block` to allow operations with blocks.
++ data resource `azureipam_blocks` to get a list of all blocks in the specified space with related information.
++ resource `azureipam_external` to allow to associate an external network to the target space and block.
++ data resource `azureipam_blocks` to get a list of all external networks associated with a space and block.
 
+### Modified (Breaking Change)
++  resource `azureipam_reservation` now allow to specify a block list. The list is evaluated in the order provider
 
 ### Fixed
 + [tfplugindocs](https://github.com/hashicorp/terraform-plugin-docs) implementation and generation

@@ -13,11 +13,11 @@ import (
 func TestAccReservationResource(t *testing.T) {
 	httpmock.Activate()
 	defer httpmock.DeactivateAndReset()
-	httpmock.RegisterResponder("POST", "https://mockedHost.azurewebsites.net/api/spaces/au/blocks/AustraliaEast/reservations",
+	httpmock.RegisterResponder("POST", "https://mockedHost.azurewebsites.net/api/spaces/au/reservations",
 		func(req *http.Request) (*http.Response, error) {
 			return httpmock.NewStringResponse(http.StatusOK, httpmock.File("tests/resource/reservation/new_reservation.json").String()), nil
 		})
-	httpmock.RegisterResponder("DELETE", "https://mockedHost.azurewebsites.net/api/spaces/au/blocks/AustraliaEast/reservations",
+	httpmock.RegisterResponder("DELETE", "https://mockedHost.azurewebsites.net/api/spaces/au/blocks/AustraliaSoutheast/reservations",
 		func(req *http.Request) (*http.Response, error) {
 			return httpmock.NewStringResponse(http.StatusOK, ""), nil
 		})
@@ -25,7 +25,7 @@ func TestAccReservationResource(t *testing.T) {
 		func(req *http.Request) (*http.Response, error) {
 			return httpmock.NewStringResponse(http.StatusOK, httpmock.File("tests/resource/reservation/spaces_with_new_reservation_info.json").String()), nil
 		})
-	httpmock.RegisterResponder("GET", "https://mockedHost.azurewebsites.net/api/spaces/au/blocks/AustraliaEast/reservations?settled=true",
+	httpmock.RegisterResponder("GET", "https://mockedHost.azurewebsites.net/api/spaces/au/blocks/AustraliaSoutheast/reservations?settled=true",
 		func(req *http.Request) (*http.Response, error) {
 			return httpmock.NewStringResponse(http.StatusOK, httpmock.File("tests/resource/reservation/reservations_with_new_reservation.json").String()), nil
 		})
@@ -37,7 +37,7 @@ func TestAccReservationResource(t *testing.T) {
 			{
 				Config: testAccProviderConfig + `resource "azureipam_reservation" "test" {
 					space          = "au"
-					block          = "AustraliaEast"
+					blocks         = ["AustraliaSoutheast", "AustraliaEast"]
 					size           = 23
 					description    = "acceptance-test"
 					reverse_search = true
@@ -46,11 +46,14 @@ func TestAccReservationResource(t *testing.T) {
 				Check: resource.ComposeAggregateTestCheckFunc(
 					//Verify common attributes to ensure that all are set
 					resource.TestCheckResourceAttr("azureipam_reservation.test", "space", "au"),
-					resource.TestCheckResourceAttr("azureipam_reservation.test", "block", "AustraliaEast"),
+					resource.TestCheckResourceAttr("azureipam_reservation.test", "blocks.#", "2"),
+					resource.TestCheckResourceAttr("azureipam_reservation.test", "blocks.0", "AustraliaSoutheast"),
+					resource.TestCheckResourceAttr("azureipam_reservation.test", "blocks.1", "AustraliaEast"),
 					resource.TestCheckResourceAttr("azureipam_reservation.test", "reverse_search", "true"),
 					resource.TestCheckResourceAttr("azureipam_reservation.test", "smallest_cidr", "true"),
 					resource.TestCheckResourceAttr("azureipam_reservation.test", "id", "YYtppsvYQsRSBpZLsioZSV"),
-					resource.TestCheckResourceAttr("azureipam_reservation.test", "cidr", "10.82.6.0/23"),
+					resource.TestCheckResourceAttr("azureipam_reservation.test", "block", "AustraliaSoutheast"),
+					resource.TestCheckResourceAttr("azureipam_reservation.test", "cidr", "10.83.2.0/23"),
 					resource.TestCheckResourceAttr("azureipam_reservation.test", "description", "acceptance-test"),
 					resource.TestCheckResourceAttrWith("azureipam_reservation.test", "created_on", func(value string) error {
 						expected, _ := time.Parse(time.RFC3339, "2024-09-07T06:21:42+02:00")
@@ -73,7 +76,7 @@ func TestAccReservationResource(t *testing.T) {
 				ResourceName:            "azureipam_reservation.test",
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"reverse_search", "smallest_cidr"},
+				ImportStateVerifyIgnore: []string{"reverse_search", "smallest_cidr", "blocks"},
 			},
 			// Update  NOT ALLOWED by provider
 

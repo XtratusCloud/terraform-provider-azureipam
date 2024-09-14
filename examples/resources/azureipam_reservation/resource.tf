@@ -12,10 +12,13 @@ resource "azurerm_virtual_network" "example" {
   tags          = azureipam_reservation.new.tags ##Don't forget to add the auto-generated `X-IPAM-RES-ID` tag to the vnet.
 }
 
-# Create a CIDR reservation
+# Create a CIDR reservation specifying multiple blocks
 resource "azureipam_reservation" "new" {
-  space          = "au"
-  block          = "AustraliaEast"
+  space = "au"
+  blocks = [
+    "AustraliaSoutheast",
+    "AustraliaEast"
+  ]
   size           = 24
   description    = "this is a test"
   reverse_search = true

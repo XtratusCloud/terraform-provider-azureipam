@@ -23,7 +23,7 @@ Do not keep your authentication token in HCL, use Terraform environment variable
 terraform {
   required_providers {
     azureipam = {
-      version = "~>1.1"
+      version = "~>2.0"
       source  = "xtratuscloud/azureipam"
     }
   }

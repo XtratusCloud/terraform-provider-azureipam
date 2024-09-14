@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int32planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -35,12 +36,13 @@ func NewReservationResource() resource.Resource {
 // reservationResourceModel maps the resource schema data.
 type reservationResourceModel struct {
 	Space         types.String      `tfsdk:"space"`
-	Block         types.String      `tfsdk:"block"`
+	Blocks        types.List        `tfsdk:"blocks"`
 	Size          types.Int32       `tfsdk:"size"`
 	Description   types.String      `tfsdk:"description"`
 	ReverseSearch types.Bool        `tfsdk:"reverse_search"`
 	SmallestCidr  types.Bool        `tfsdk:"smallest_cidr"`
 	Id            types.String      `tfsdk:"id"`
+	Block         types.String      `tfsdk:"block"`
 	Cidr          types.String      `tfsdk:"cidr"`
 	CreatedBy     types.String      `tfsdk:"created_by"`
 	CreatedOn     timetypes.RFC3339 `tfsdk:"created_on"`
@@ -63,7 +65,7 @@ func (r *reservationResource) Metadata(_ context.Context, req resource.MetadataR
 // Schema defines the schema for the resource.
 func (r *reservationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "The reservation resource allows you to create a IPAM reservation in the specific space and block.",
+		Description: "The reservation resource allows you to create a IPAM reservation in the specific space and list of blocks.",
 		Attributes: map[string]schema.Attribute{
 			"space": schema.StringAttribute{
 				Description: "Name of the existing space in the IPAM application. Changing this forces a new resource to be created.",
@@ -72,11 +74,12 @@ func (r *reservationResource) Schema(_ context.Context, _ resource.SchemaRequest
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
-			"block": schema.StringAttribute{
-				Description: "Name of the existing block, related to the specified space, in which the reservation is to be made. Changing this forces a new resource to be created.",
+			"blocks": schema.ListAttribute{
+				Description: "List with the names of blocks in the specified space in which the reservation is to be create. The list is evaluated in the order provider. Changing this forces a new resource to be created.",
 				Required:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
+				ElementType: types.StringType,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.RequiresReplace(),
 				},
 			},
 			"size": schema.Int32Attribute{
@@ -98,7 +101,7 @@ func (r *reservationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				},
 			},
 			"smallest_cidr": schema.BoolAttribute{
-				Description: "New networks will be created using the smallest possible available block? (e.g. it will not break up large CIDR blocks when possible) .Defaults to `false`. Changing this forces a new resource to be created.",
+				Description: "New networks will be created using the smallest possible available block? (e.g. it will not break up large CIDR blocks when possible).Defaults to `false`. Changing this forces a new resource to be created.",
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
@@ -106,6 +109,10 @@ func (r *reservationResource) Schema(_ context.Context, _ resource.SchemaRequest
 			},
 			"id": schema.StringAttribute{
 				Description: "The unique identifier of the generated reservation.",
+				Computed:    true,
+			},
+			"block": schema.StringAttribute{
+				Description: "Block where the reservation have been created.",
 				Computed:    true,
 			},
 			"cidr": schema.StringAttribute{
@@ -153,10 +160,13 @@ func (r *reservationResource) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
-	reservation, err := r.client.CreateReservation(
+	var blocks *[]string
+	diag:= plan.Blocks.ElementsAs(ctx, &blocks, false)
+	resp.Diagnostics.Append(diag...)
+ 	reservation, err := r.client.CreateReservation(
 		plan.Space.ValueString(),
-		plan.Block.ValueString(),
-		plan.Description.ValueString(),
+		*blocks,
+		plan.Description.ValueStringPointer(),
 		int(plan.Size.ValueInt32()),
 		plan.ReverseSearch.ValueBool(),
 		plan.SmallestCidr.ValueBool(),

@@ -2,12 +2,12 @@
 page_title: "azureipam_reservation Resource - azureipam"
 subcategory: ""
 description: |-
-  The reservation resource allows you to create a IPAM reservation in the specific space and block.
+  The reservation resource allows you to create a IPAM reservation in the specific space and list of blocks.
 ---
 
 # azureipam_reservation (Resource)
 
-The reservation resource allows you to create a IPAM reservation in the specific space and block.
+The reservation resource allows you to create a IPAM reservation in the specific space and list of blocks.
 
 ## Example Usage
 
@@ -26,10 +26,13 @@ resource "azurerm_virtual_network" "example" {
   tags          = azureipam_reservation.new.tags ##Don't forget to add the auto-generated `X-IPAM-RES-ID` tag to the vnet.
 }
 
-# Create a CIDR reservation
+# Create a CIDR reservation specifying multiple blocks
 resource "azureipam_reservation" "new" {
-  space          = "au"
-  block          = "AustraliaEast"
+  space = "au"
+  blocks = [
+    "AustraliaSoutheast",
+    "AustraliaEast"
+  ]
   size           = 24
   description    = "this is a test"
   reverse_search = true
@@ -45,7 +48,7 @@ output "created" {
 
 ### Required
 
-- `block` (String) Name of the existing block, related to the specified space, in which the reservation is to be made. Changing this forces a new resource to be created.
+- `blocks` (List of String) List with the names of blocks in the specified space in which the reservation is to be create. The list is evaluated in the order provider. Changing this forces a new resource to be created.
 - `size` (Number) Integer value to indicate the subnet mask bits, which defines the size of the vnet to reserve (example 24 for a /24 subnet). Changing this forces a new resource to be created.
 - `space` (String) Name of the existing space in the IPAM application. Changing this forces a new resource to be created.
 
@@ -53,10 +56,11 @@ output "created" {
 
 - `description` (String) Description text that describe the reservation, that will be added as an additional tag.
 - `reverse_search` (Boolean) New networks will be created as close to the end of the block as possible?. Defaults to `false`. Changing this forces a new resource to be created.
-- `smallest_cidr` (Boolean) New networks will be created using the smallest possible available block? (e.g. it will not break up large CIDR blocks when possible) .Defaults to `false`. Changing this forces a new resource to be created.
+- `smallest_cidr` (Boolean) New networks will be created using the smallest possible available block? (e.g. it will not break up large CIDR blocks when possible).Defaults to `false`. Changing this forces a new resource to be created.
 
 ### Read-Only
 
+- `block` (String) Block where the reservation have been created.
 - `cidr` (String) The assigned and reserved range, in cidr notation.
 - `created_by` (String) Email or identification of user that created the reservation.
 - `created_on` (String) The date and time that the reservacion was created.
@@ -73,3 +77,11 @@ Reservations can be imported using the ID of the IPAM reservation, e.g.
 ```shell
 terraform import azureipam_reservation.new j26zNRqH8SSNLDv34VEdG6
 ```
+
+**NOTE** that folliwing attributes used during the reservation creation request are not stored/retrieved by the Azure IPAM solution, and can't be imported to the terraform state with the original value. 
+- reverse_search
+- smallest_cidr
+- blocks
+
+These attributes are configured to enforce recreation of the resource when changed, so you will have to manually correct their assigned values after import (or manually modify the terraform state content) to prevent terraform from proposing a recreation of the resource after import.
+

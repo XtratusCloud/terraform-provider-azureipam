@@ -4,14 +4,14 @@
         "desc": "Australia",
         "blocks": [
             {
-                "name": "AustraliaEast",
+                "name": "AustraliaSoutheast",
                 "cidr": "10.82.0.0/16",
                 "vnets": [],
                 "externals": [],
                 "resv": [
                     {
                         "id": "YYtppsvYQsRSBpZLsioZSV",
-                        "cidr": "10.82.6.0/23",
+                        "cidr": "10.83.2.0/23",
                         "desc": "acceptance-test",
                         "createdOn": 1725682902.9728477,
                         "createdBy": "dummyemail@gmail.com",
