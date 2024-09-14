@@ -1,20 +1,5 @@
-# Create a CIDR reservation specifying only a block
-resource "azureipam_reservation" "new" {
-  space = "au"
-  blocks = [
-    "AustraliaEast"
-  ]
-  size           = 24
-  description    = "Reservation test in specified block"
-  reverse_search = true
-  smallest_cidr  = true
-}
-output "reservation" {
-  value = azureipam_reservation.new
-}
-
 # Create a CIDR reservation specifying multiple blocks
-resource "azureipam_reservation" "block_list" {
+resource "azureipam_reservation" "new" {
   space = "au"
   blocks = [
     "AustraliaSoutheast",
@@ -25,6 +10,6 @@ resource "azureipam_reservation" "block_list" {
   reverse_search = false
   smallest_cidr  = false
 }
-output "reservation_block_list" {
-  value = azureipam_reservation.block_list
+output "reservation" {
+  value = azureipam_reservation.new
 }

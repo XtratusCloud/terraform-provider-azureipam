@@ -183,7 +183,7 @@ func (p *azureIpamProvider) DataSources(ctx context.Context) []func() datasource
 		NewReservationsDataSource,
 		NewSpacesDataSource,
 		NewBlocksDataSource,
-		NewSpacesDataSource,
+		NewExternalsDataSource,
 	}
 }
 
@@ -194,6 +194,7 @@ func (p *azureIpamProvider) Resources(ctx context.Context) []func() resource.Res
 		NewSpaceResource,
 		NewBlockResource,
 		NewExternalResource,
+		NewReservationCidrResource,
 	}
 }
 

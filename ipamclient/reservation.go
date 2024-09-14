@@ -9,12 +9,22 @@ import (
 )
 
 // internal Models
-type reservationRequest struct {
+type reservationSpaceRequest struct {
 	Blocks        []string `json:"blocks"`
-	Size          int      `json:"size"`
+	Size          *int32   `json:"size"`
 	Description   *string  `json:"desc"`
 	ReverseSearch bool     `json:"reverse_search"`
 	SmallestCidr  bool     `json:"smallest_cidr"`
+}
+type reservationBlockSizeRequest struct {
+	Size          int32   `json:"size"`
+	Description   *string `json:"desc"`
+	ReverseSearch bool    `json:"reverse_search"`
+	SmallestCidr  bool    `json:"smallest_cidr"`
+}
+type reservationBlockCidrRequest struct {
+	Cidr        string  `json:"cidr"`
+	Description *string `json:"desc"`
 }
 
 // GetReservations - Returns all existing reservations by space and block
@@ -84,25 +94,73 @@ func (c *Client) GetReservation(space string, block string, id string) (*Reserva
 }
 
 // CreateReservation - Create new reservation
-func (c *Client) CreateReservation(space string, blocks []string, description *string, size int, reverseSearch bool, smallestCidr bool) (*Reservation, error) {
-	//construct body
-	request := &reservationRequest{
-		Blocks:        blocks,
-		Size:          size,
-		ReverseSearch: reverseSearch,
-		SmallestCidr:  smallestCidr,
-		Description:   description,
-	}
-	rb, err := json.Marshal(request)
-	if err != nil {
-		return nil, err
+func (c *Client) CreateReservation(space string, blocks []string, description *string, size *int32, specific_cidr *string, reverseSearch bool, smallestCidr bool) (*Reservation, error) {
+	//validate params
+	if size == nil && specific_cidr == nil {
+		return nil, errors.New("at least one of size or specific_cidr must be specified to create a reservation")
+	} else if len(blocks) > 1 && specific_cidr != nil {
+		return nil, errors.New("specific_cidr is only allowed when only a block is specified in the list")
 	}
 
-	//prepare request
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/api/spaces/%s/reservations", c.HostURL, space), strings.NewReader(string(rb)))
-	if err != nil {
-		return nil, err
+	//prepare request and body
+	var req *http.Request
+	var errReq error
+	if len(blocks) == 1 {
+		//Only one block specified
+
+		if specific_cidr != nil {
+			//specific_cidr specified
+			request := &reservationBlockCidrRequest{
+				Cidr:        *specific_cidr,
+				Description: description,
+			}
+			rb, err := json.Marshal(request)
+			if err != nil {
+				return nil, err
+			}
+			req, errReq = http.NewRequest("POST", fmt.Sprintf("%s/api/spaces/%s/blocks/%s/reservations", c.HostURL, space, blocks[0]), strings.NewReader(string(rb)))
+			if errReq != nil {
+				return nil, err
+			}
+		} else {
+			//reservation by size
+			request := &reservationBlockSizeRequest{
+				Size:          *size,
+				ReverseSearch: reverseSearch,
+				SmallestCidr:  smallestCidr,
+				Description:   description,
+			}
+			rb, err := json.Marshal(request)
+			if err != nil {
+				return nil, err
+			}
+			req, errReq = http.NewRequest("POST", fmt.Sprintf("%s/api/spaces/%s/blocks/%s/reservations", c.HostURL, space, blocks[0]), strings.NewReader(string(rb)))
+			if errReq != nil {
+				return nil, err
+			}
+		}
+
+	} else if len(blocks) > 1 {
+		request := &reservationSpaceRequest{
+			Size:          size,
+			Blocks:        blocks,
+			ReverseSearch: reverseSearch,
+			SmallestCidr:  smallestCidr,
+			Description:   description,
+		}
+		rb, err := json.Marshal(request)
+		if err != nil {
+			return nil, err
+		}
+		req, errReq = http.NewRequest("POST", fmt.Sprintf("%s/api/spaces/%s/reservations", c.HostURL, space), strings.NewReader(string(rb)))
+		if errReq != nil {
+			return nil, err
+		}
+	} else {
+		return nil, errors.New("at least one block must be specified")
 	}
+
+	//Perform request
 	response, err := c.doRequest(req)
 	if err != nil {
 		return nil, err

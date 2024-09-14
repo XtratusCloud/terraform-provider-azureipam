@@ -44,7 +44,7 @@ data "external" "get_access_token" {
 provider "azureipam" {
   api_url                = local.ipam_url
   token                  = data.external.get_access_token.result.accessToken
-  skip_cert_verification = false
+  skip_cert_verification = true //ONLY recommended for development environments
 }
 ```
 
