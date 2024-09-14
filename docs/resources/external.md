@@ -30,11 +30,11 @@ output "external" {
 
 ### Required
 
-- `block` (String) Name of the block where the external must be associated.
+- `block` (String) Name of the block where the external must be associated. Changing this forces a new resource to be created.
 - `cidr` (String) The IP range to configure to the external network, in cidr notation.
 - `description` (String) Text that describes the external network.
 - `name` (String) Name of the external network.
-- `space` (String) Name of the space where the external must be associated..
+- `space` (String) Name of the space where the external must be associated. Changing this forces a new resource to be created.
 
 ## Import
 

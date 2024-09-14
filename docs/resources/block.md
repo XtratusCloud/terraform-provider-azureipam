@@ -30,7 +30,7 @@ output "space" {
 
 - `cidr` (String) The IP range to configure to the block, in cidr notation.
 - `name` (String) Name of the block.
-- `space` (String) Name of the space where the block must be created.
+- `space` (String) Name of the space where the block must be created. Changing this forces a new resource to be created.
 
 ## Import
 

@@ -10,6 +10,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -48,8 +50,11 @@ func (r *blockResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 		Description: "The block resource allows you to create a IPAM block in a specific Space.",
 		Attributes: map[string]schema.Attribute{
 			"space": schema.StringAttribute{
-				Description: "Name of the space where the block must be created.",
+				Description: "Name of the space where the block must be created. Changing this forces a new resource to be created.",
 				Required:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
 			},
 			"name": schema.StringAttribute{
 				Description: "Name of the block.",

@@ -66,21 +66,21 @@ func (r *reservationResource) Schema(_ context.Context, _ resource.SchemaRequest
 		Description: "The reservation resource allows you to create a IPAM reservation in the specific space and block.",
 		Attributes: map[string]schema.Attribute{
 			"space": schema.StringAttribute{
-				Description: "Name of the existing space in the IPAM application.",
+				Description: "Name of the existing space in the IPAM application. Changing this forces a new resource to be created.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"block": schema.StringAttribute{
-				Description: "Name of the existing block, related to the specified space, in which the reservation is to be made.",
+				Description: "Name of the existing block, related to the specified space, in which the reservation is to be made. Changing this forces a new resource to be created.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"size": schema.Int32Attribute{
-				Description: "Integer value to indicate the subnet mask bits, which defines the size of the vnet to reserve (example 24 for a /24 subnet).",
+				Description: "Integer value to indicate the subnet mask bits, which defines the size of the vnet to reserve (example 24 for a /24 subnet). Changing this forces a new resource to be created.",
 				Required:    true,
 				PlanModifiers: []planmodifier.Int32{
 					int32planmodifier.RequiresReplace(),
@@ -91,14 +91,14 @@ func (r *reservationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Optional:    true,
 			},
 			"reverse_search": schema.BoolAttribute{
-				Description: "New networks will be created as close to the end of the block as possible?. Defaults to `false`.",
+				Description: "New networks will be created as close to the end of the block as possible?. Defaults to `false`. Changing this forces a new resource to be created.",
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
 				},
 			},
 			"smallest_cidr": schema.BoolAttribute{
-				Description: "New networks will be created using the smallest possible available block? (e.g. it will not break up large CIDR blocks when possible) .Defaults to `false`.",
+				Description: "New networks will be created using the smallest possible available block? (e.g. it will not break up large CIDR blocks when possible) .Defaults to `false`. Changing this forces a new resource to be created.",
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),

@@ -45,15 +45,15 @@ output "created" {
 
 ### Required
 
-- `block` (String) Name of the existing block, related to the specified space, in which the reservation is to be made.
-- `size` (Number) Integer value to indicate the subnet mask bits, which defines the size of the vnet to reserve (example 24 for a /24 subnet).
-- `space` (String) Name of the existing space in the IPAM application.
+- `block` (String) Name of the existing block, related to the specified space, in which the reservation is to be made. Changing this forces a new resource to be created.
+- `size` (Number) Integer value to indicate the subnet mask bits, which defines the size of the vnet to reserve (example 24 for a /24 subnet). Changing this forces a new resource to be created.
+- `space` (String) Name of the existing space in the IPAM application. Changing this forces a new resource to be created.
 
 ### Optional
 
 - `description` (String) Description text that describe the reservation, that will be added as an additional tag.
-- `reverse_search` (Boolean) New networks will be created as close to the end of the block as possible?. Defaults to `false`.
-- `smallest_cidr` (Boolean) New networks will be created using the smallest possible available block? (e.g. it will not break up large CIDR blocks when possible) .Defaults to `false`.
+- `reverse_search` (Boolean) New networks will be created as close to the end of the block as possible?. Defaults to `false`. Changing this forces a new resource to be created.
+- `smallest_cidr` (Boolean) New networks will be created using the smallest possible available block? (e.g. it will not break up large CIDR blocks when possible) .Defaults to `false`. Changing this forces a new resource to be created.
 
 ### Read-Only
 
