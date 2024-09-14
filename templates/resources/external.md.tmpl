@@ -1,0 +1,26 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+## Example Usage
+
+{{ tffile (printf "examples/resources/%s/resource.tf" .Name)}}
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+External Networks can be imported using the space and block names, and the name of the external network, e.g.
+
+```shell
+terraform import azureipam_external.new au/AustraliaSoutheast/acctest
+```
+
+-> This ID format is unique to Terraform and is composed of the space name, the block name, and the external network name in the format `{SpaceName}/{BlockName}/{ExternalNetworkName}`.

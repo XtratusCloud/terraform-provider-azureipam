@@ -1,0 +1,5 @@
+{
+    "name": "acctest",
+    "desc": "External Network for Acceptance Tests",
+    "cidr": "10.83.1.0/24"
+}

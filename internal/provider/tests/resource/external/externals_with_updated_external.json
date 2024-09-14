@@ -1,0 +1,12 @@
+[
+    {
+        "name": "prueba",
+        "desc": "descripcion prueba",
+        "cidr": "10.83.0.0/24"
+    },
+    {
+        "name": "acctestupdated",
+        "desc": "External Network for Acceptance Tests Updated",
+        "cidr": "10.83.10.0/24"
+    }
+]
