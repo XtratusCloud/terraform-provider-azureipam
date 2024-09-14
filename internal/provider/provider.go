@@ -67,7 +67,7 @@ func (p *azureIpamProvider) Schema(ctx context.Context, req provider.SchemaReque
 				Sensitive:           true,
 			},
 			"skip_cert_verification": schema.BoolAttribute{
-				MarkdownDescription: "Specifies it the certificate chain validation must be skipped calling the API endpoint. Default to true to maintain current functionality and avoid a version breaking change.",
+				MarkdownDescription: "Specifies it the certificate chain validation must be skipped calling the API endpoint. Default to false.",
 				Optional:            true,
 			},
 		},
@@ -146,7 +146,7 @@ func (p *azureIpamProvider) Configure(ctx context.Context, req provider.Configur
 	if p.version == "test" {
 		skipCertVerification = false //always false for acceptance tests, to enforce the http.DefaultTransport usage
 	} else if config.SkipCertificateVerification.IsNull() {
-		skipCertVerification = true //true if not specified, to maintain current functionality
+		skipCertVerification = false
 	} else {
 		skipCertVerification = config.SkipCertificateVerification.ValueBool()
 	}
@@ -183,7 +183,7 @@ func (p *azureIpamProvider) DataSources(ctx context.Context) []func() datasource
 		NewReservationsDataSource,
 		NewSpacesDataSource,
 		NewBlocksDataSource,
-		NewExternalsDataSource,
+		NewSpacesDataSource,
 	}
 }
 

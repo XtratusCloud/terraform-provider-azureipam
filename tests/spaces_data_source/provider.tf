@@ -18,4 +18,5 @@ provider "azurerm" {
 
 # REMEMBER to set AZUREIPAM_API_URL and AZUREIPAM_TOKEN env variables
 provider "azureipam" {
+  skip_cert_verification = true
 }
