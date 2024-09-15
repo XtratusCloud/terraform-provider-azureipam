@@ -184,6 +184,7 @@ func (p *azureIpamProvider) DataSources(ctx context.Context) []func() datasource
 		NewSpacesDataSource,
 		NewBlocksDataSource,
 		NewExternalsDataSource,
+		NewExternalDataSource,
 	}
 }
 

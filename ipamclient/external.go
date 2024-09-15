@@ -69,6 +69,36 @@ func (c *Client) GetExternal(space string, block string, name string) (*External
 	return &ret, nil
 }
 
+// GetExternalInfo - Returns a specifc external network by space, block and name with minimal information
+func (c *Client) GetExternalInfo(space string, block string, name string) (*ExternalInfo, error) {
+
+	//prepare request
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/spaces/%s/blocks/%s/externals/%s", c.HostURL, space, block, name), nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.doRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	//process response
+	var readed ExternalInfo
+	err = json.Unmarshal(response, &readed)
+	if err != nil {
+		return nil, err
+	}
+	//add attributes not included in response
+	ret := ExternalInfo{
+		Name: readed.Name,
+		Description: readed.Description,
+		Cidr: readed.Cidr,
+	} 
+
+	return &ret, nil
+}
+
+
 // CreateExternal - Create new external network within a specific Space and Block.
 func (c *Client) CreateExternal(space string, block string, name string, desc string, cidr string) (*External, error) {
 
