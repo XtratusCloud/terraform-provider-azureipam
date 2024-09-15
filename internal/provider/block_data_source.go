@@ -50,7 +50,7 @@ func (d *blockDataSource) Metadata(_ context.Context, req datasource.MetadataReq
 // Schema defines the schema for the data source.
 func (d *blockDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "The block data source allows you to retrieve information of a specific block with related information.",
+		Description: "The block data source allows you to retrieve one specific block and their related information.",
 		Attributes: map[string]schema.Attribute{
 			"space": schema.StringAttribute{
 				Description: "Name of the `space` for which to read the related `blocks`.",
@@ -226,7 +226,7 @@ func (d *blockDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Unable to Read AzureIpam Blocks",
+			"Unable to Read AzureIpam Block named: "+ state.Name.ValueString() + " is space: " + state.Space.ValueString(),
 			err.Error(),
 		)
 		return

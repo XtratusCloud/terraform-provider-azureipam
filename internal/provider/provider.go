@@ -182,6 +182,7 @@ func (p *azureIpamProvider) DataSources(ctx context.Context) []func() datasource
 	return []func() datasource.DataSource{
 		NewReservationsDataSource,
 		NewSpacesDataSource,
+		NewSpaceDataSource,
 		NewBlocksDataSource,
 		NewBlockDataSource,
 		NewExternalsDataSource,
