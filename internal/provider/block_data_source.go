@@ -50,7 +50,7 @@ func (d *blockDataSource) Metadata(_ context.Context, req datasource.MetadataReq
 // Schema defines the schema for the data source.
 func (d *blockDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "The block data source allows you to retrieve one specific block and their related information.",
+		Description: "The block data source allows you to retrieve one specific block by space and name with their related information.",
 		Attributes: map[string]schema.Attribute{
 			"space": schema.StringAttribute{
 				Description: "Name of the `space` for which to read the related `blocks`.",

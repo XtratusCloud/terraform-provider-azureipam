@@ -49,7 +49,7 @@ func (d *spaceDataSource) Metadata(_ context.Context, req datasource.MetadataReq
 // Schema defines the schema for the data source.
 func (d *spaceDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "The spaces data source allows you to retrieve one specific space and their related information.",
+		Description: "The spaces data source allows you to retrieve one specific space by name with their related information.",
 		Attributes: map[string]schema.Attribute{
 			"expand": schema.BoolAttribute{
 				Description: "Indicates if network references to full network objects must be included.",

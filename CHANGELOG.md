@@ -44,8 +44,9 @@
 + data resource `azureipam_blocks` to get a list of all external networks associated with a space and block. 
 + resource `azureipam_reservation_cidr` to allow to create reservation specifying the cidr, space and block.
 + data resource `azureipam_external` to get a specific external network associated with a space and block. 
-+ data resource `azureipam_block` to get a specific block with related information.
-
++ data resource `azureipam_block` to get a specific block by space and name with related information.
++ data resource `azureipam_space` to get a specific space by name with related information.
++ data resource `azureipam_reservation` to get a specific reservation by id in the specified space and block.
 
 ### Modified (Breaking Change)
 + resource `azureipam_reservation` now allow to specify a block list. The list is evaluated in the order provider
