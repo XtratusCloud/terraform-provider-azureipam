@@ -233,7 +233,7 @@ func (d *blocksDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 		return
 	}
 
-	// Map response body to model
+	// Map response body to state model
 	for _, block := range *blocks {
 		state.Blocks = append(state.Blocks, flattenBlockInfo(&block))
 	}

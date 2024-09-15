@@ -41,6 +41,27 @@ func (c *Client) GetBlocks(space string, expand bool, appendUtilization bool) (*
 	return &blocksInfo, nil
 }
 
+func (c *Client) GetBlockInfo(space string, name string, expand bool, appendUtilization bool) (*BlockInfo, error) {
+	//prepare request
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/spaces/%s/blocks/%s?expand=%t&utilization=%t", c.HostURL, space, name, expand, appendUtilization), nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.doRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	//process response
+	var blockInfo BlockInfo
+	err = json.Unmarshal(response, &blockInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	return &blockInfo, nil
+}
+
 // GetBlock - Returns a specifc block by name
 func (c *Client) GetBlock(space string, name string, expand bool, appendUtilization bool) (*Block, error) {
 
