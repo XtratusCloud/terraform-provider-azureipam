@@ -17,11 +17,11 @@
         "cidr": "10.82.0.0/16",
         "vnets": [
             {
-                "id": "/subscriptions/554a3781-68fa-4429-b46a-f86664d836b4/resourceGroups/RG-WE-ALL-COMMS-01/providers/Microsoft.Network/virtualNetworks/vnet-we-d-terratest-hub-01",
+                "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/RG-WE-ALL-COMMS-01/providers/Microsoft.Network/virtualNetworks/vnet-we-d-terratest-hub-01",
                 "active": true
             },
             {
-                "id": "/subscriptions/49a789bb-9a8d-42be-8465-53aa77552366/resourceGroups/RG-WE-ALL-COMMS-01/providers/Microsoft.Network/virtualNetworks/vnet-we-a-testzavd-01",
+                "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/RG-WE-ALL-COMMS-01/providers/Microsoft.Network/virtualNetworks/vnet-we-a-testzavd-01",
                 "active": true
             }
         ],
