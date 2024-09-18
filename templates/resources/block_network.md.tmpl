@@ -1,0 +1,31 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+## Example Usage
+
+{{ tffile (printf "examples/resources/%s/resource.tf" .Name)}}
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+Block network associations can be imported using the space and block names, and the Azure resource id of the virtual network, e.g.
+
+```shell
+terraform import azureipam_block_network.new au/Au
+straliaEast//subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/RG-WE-ALL-COMMS-01/providers/Microsoft.Network/v
+irtualNetworks/vnet-we-d-terratest-hub-0
+```
+
+**NOTE** that the slash character is used as separator, and also the Azure resourceID always starts with this character, therefore it must be repeated twice in succession when indicating the resourceid.
+
+
+-> This ID format is unique to Terraform and is composed of the space name, the block name, and the Azure resource id of the virtual network in the format `{SpaceName}/{BlockName}/{AzureResourceIdOfNetwork}`.

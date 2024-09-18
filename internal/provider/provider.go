@@ -199,6 +199,7 @@ func (p *azureIpamProvider) Resources(ctx context.Context) []func() resource.Res
 		NewBlockResource,
 		NewExternalResource,
 		NewReservationCidrResource,
+		NewBlockNetworkResource,
 	}
 }
 

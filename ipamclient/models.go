@@ -92,3 +92,13 @@ type External struct {
 	Description string `json:"desc,omitempty"`
 	Cidr        string `json:"cidr,omitempty"`
 }
+
+//BlockNetworkInfo
+type BlockNetworkInfo struct {
+	Name           string   `json:"name,omitempty"`
+	Id             string   `json:"id,omitempty"`
+	Prefixes       []string `json:"prefixes,omitempty"`
+	ResourceGroup  *string  `json:"resource_group,omitempty"`
+	SubscriptionId *string  `json:"subscription_id,omitempty"`
+	TenantId       *string  `json:"tenant_id,omitempty"`
+}

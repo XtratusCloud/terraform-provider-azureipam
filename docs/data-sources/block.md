@@ -2,12 +2,12 @@
 page_title: "azureipam_block Data Source - azureipam"
 subcategory: ""
 description: |-
-  The block data source allows you to retrieve one specific block and their related information.
+  The block data source allows you to retrieve one specific block by space and name with their related information.
 ---
 
 # azureipam_block (Data Source)
 
-The block data source allows you to retrieve one specific block and their related information.
+The block data source allows you to retrieve one specific block by space and name with their related information.
 
 ## Example Usage
 

@@ -2,12 +2,12 @@
 page_title: "azureipam_space Data Source - azureipam"
 subcategory: ""
 description: |-
-  The spaces data source allows you to retrieve one specific space and their related information.
+  The spaces data source allows you to retrieve one specific space by name with their related information.
 ---
 
 # azureipam_space (Data Source)
 
-The spaces data source allows you to retrieve one specific space and their related information.
+The spaces data source allows you to retrieve one specific space by name with their related information.
 
 ## Example Usage
 
