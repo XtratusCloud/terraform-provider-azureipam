@@ -14,6 +14,29 @@ type blockNetworkRequest struct {
 	Active bool   `json:"active"`
 }
 
+//GetBlockNetworksAvailables - Return a list of the Azure resource ids virtual networks availables to be associated to the space and block specified
+func (c *Client) GetBlockNetworksAvailables(space string, block string) (*[]string, error) {
+	//prepare request
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/spaces/%s/blocks/%s/available", c.HostURL, space, block), nil)
+	if err != nil {
+		return nil, err
+	}
+	response, err := c.doRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	//process response
+	var networkIds []string
+	err = json.Unmarshal(response, &networkIds)
+	if err != nil {
+		return nil, err
+	}
+
+	return &networkIds, nil
+}
+
+
 // GetBlockNetworksInfo - Returns a list of all Block Networks within a specific Space and Block.
 func (c *Client) GetBlockNetworksInfo(space string, block string, expand bool) (*[]BlockNetworkInfo, error) {
 	//prepare request
