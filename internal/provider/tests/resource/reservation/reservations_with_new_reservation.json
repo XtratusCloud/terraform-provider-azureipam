@@ -1,0 +1,17 @@
+[
+    {
+        "id": "YYtppsvYQsRSBpZLsioZSV",
+        "space": "au",
+        "block": "AustraliaSoutheast",
+        "cidr": "10.83.2.0/23",
+        "desc": "acceptance-test",
+        "createdOn": 1725682902.9728477,
+        "createdBy": "dummyemail@gmail.com",
+        "settledOn": null,
+        "settledBy": null,
+        "status": "wait",
+        "tag": {
+            "X-IPAM-RES-ID": "YYtppsvYQsRSBpZLsioZSV"
+        }
+    }
+]

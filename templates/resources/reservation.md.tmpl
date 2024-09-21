@@ -1,0 +1,32 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: ""
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+## Example Usage
+
+{{ tffile (printf "examples/resources/%s/resource.tf" .Name)}}
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+Reservations can be imported using the ID of the IPAM reservation, e.g.
+
+```shell
+terraform import azureipam_reservation.new j26zNRqH8SSNLDv34VEdG6
+```
+
+**NOTE** that folliwing attributes used during the reservation creation request are not stored/retrieved by the Azure IPAM solution, and can't be imported to the terraform state with the original value. 
+- reverse_search
+- smallest_cidr
+- blocks
+
+These attributes are configured to enforce recreation of the resource when changed, so you will have to manually correct their assigned values after import (or manually modify the terraform state content) to prevent terraform from proposing a recreation of the resource after import.
+

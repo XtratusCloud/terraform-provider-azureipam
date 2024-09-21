@@ -1,0 +1,7 @@
+{
+    "name": "AustraliaNorth",
+    "cidr": "10.85.0.0/16",
+    "vnets": [],
+    "externals": [],
+    "resv": []
+}

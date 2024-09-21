@@ -3,7 +3,7 @@ package azureipamclient
 import (
 	"crypto/tls"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"time"
 )
@@ -16,9 +16,14 @@ type Client struct {
 }
 
 // NewClient - Construct a new HTTP Client to interact with the APIM REST API
-func NewClient(host, authToken *string) (*Client, error) {
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // <--- Problem
+func NewClient(host, authToken *string, SkipCertificateVerification bool) (*Client, error) {
+	var tr http.RoundTripper
+	if SkipCertificateVerification {
+		tr = &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, //Skip tls certificate verification if requested
+		}
+	} else {
+		tr = http.DefaultTransport //Use http.DefaultTransport, needed to allow acceptance tests with [jarcoal/httpmock](https://github.com/jarcoal/httpmock)
 	}
 	c := Client{
 		HTTPClient: &http.Client{Timeout: 10 * time.Second, Transport: tr},
@@ -47,7 +52,7 @@ func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 	defer res.Body.Close()
 
 	//read response body
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}

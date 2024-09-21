@@ -1,0 +1,62 @@
+[
+    {
+        "id": "3MFHm4s88SVrH8nQ4cK9Um",
+        "space": "au",
+        "block": "AustraliaEast",
+        "cidr": "10.82.3.0/24",
+        "desc": "this is a test",
+        "createdOn": 1725645690.772731,
+        "createdBy": "dummyemail@gmail.com",
+        "settledOn": null,
+        "settledBy": null,
+        "status": "wait",
+        "tag": {
+            "X-IPAM-RES-ID": "3MFHm4s88SVrH8nQ4cK9Um"
+        }
+    },
+    {
+        "id": "SeLtC57REpSyhiJ9o7rS5s",
+        "space": "au",
+        "block": "AustraliaEast",
+        "cidr": "10.82.1.192/26",
+        "desc": "vnet-we-c-spoketest-01",
+        "createdOn": 1699368205.949981,
+        "createdBy": "spn:d050bde1-a431-4b3d-b20e-d22ca9021dbe",
+        "settledOn": 1699370295.3918931,
+        "settledBy": "AzureIPAM",
+        "status": "fulfilled",
+        "tag": {
+            "X-IPAM-RES-ID": "SeLtC57REpSyhiJ9o7rS5s"
+        }
+    },
+    {
+        "id": "9nMUvzo7NUuwB9ABwCDk6X",
+        "space": "au",
+        "block": "AustraliaEast",
+        "cidr": "10.82.1.0/24",
+        "desc": "vnet-we-c-terratest-01",
+        "createdOn": 1699422722.6585565,
+        "createdBy": "spn:d050bde1-a431-4b3d-b20e-d22ca9021dbe",
+        "settledOn": 1699422772.8888912,
+        "settledBy": "AzureIPAM",
+        "status": "fulfilled",
+        "tag": {
+            "X-IPAM-RES-ID": "9nMUvzo7NUuwB9ABwCDk6X"
+        }
+    },
+    {
+        "id": "hi3fxt9PeSpxhykfSszVUb",
+        "space": "au",
+        "block": "AustraliaEast",
+        "cidr": "10.82.1.160/27",
+        "desc": "vnet-we-c-arq3tier-01",
+        "createdOn": 1699447867.567297,
+        "createdBy": "spn:9fc2493a-b515-49a6-9d73-93e1bac5f6cc",
+        "settledOn": 1712128721.8958313,
+        "settledBy": "dummyemail@gmail.com",
+        "status": "cancelledByUser",
+        "tag": {
+            "X-IPAM-RES-ID": "hi3fxt9PeSpxhykfSszVUb"
+        }
+    }
+]
