@@ -13,34 +13,34 @@ import (
 
 // Ensure the implementation satisfies the expected interfaces.
 var (
-	_ datasource.DataSource              = &blockNetworkAvailablesDataSource{}
-	_ datasource.DataSourceWithConfigure = &blockNetworkAvailablesDataSource{}
+	_ datasource.DataSource              = &blockNetworksAvailablesDataSource{}
+	_ datasource.DataSourceWithConfigure = &blockNetworksAvailablesDataSource{}
 )
 
 // NewBlockNetworksAvailablesDataSource is a helper function to simplify the provider implementation.
 func NewBlockNetworksAvailablesDataSource() datasource.DataSource {
-	return &blockNetworkAvailablesDataSource{}
+	return &blockNetworksAvailablesDataSource{}
 }
 
-// blockNetworkAvailablesDataSource is the data source implementation.
-type blockNetworkAvailablesDataSource struct {
+// blockNetworksAvailablesDataSource is the data source implementation.
+type blockNetworksAvailablesDataSource struct {
 	client *ipamclient.Client
 }
 
-// blockNetworkAvailablesDataSourceModel maps the data source schema data.
-type blockNetworkAvailablesDataSourceModel struct {
+// blockNetworksAvailablesDataSourceModel maps the data source schema data.
+type blockNetworksAvailablesDataSourceModel struct {
 	Space types.String   `tfsdk:"space"`
 	Block types.String   `tfsdk:"block"`
 	Ids   []types.String `tfsdk:"ids"`
 }
 
 // Metadata returns the data source type name.
-func (d *blockNetworkAvailablesDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+func (d *blockNetworksAvailablesDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_block_networks_availables"
 }
 
 // Schema defines the schema for the data source.
-func (d *blockNetworkAvailablesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+func (d *blockNetworksAvailablesDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Description: "The block network availables data source allows you to retrieve information of the azure virtual networks availables to be associated with a space and block.",
 		Attributes: map[string]schema.Attribute{
@@ -62,8 +62,8 @@ func (d *blockNetworkAvailablesDataSource) Schema(_ context.Context, _ datasourc
 }
 
 // Read refreshes the Terraform state with the latest data.
-func (d *blockNetworkAvailablesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
-	var state blockNetworkAvailablesDataSourceModel
+func (d *blockNetworksAvailablesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+	var state blockNetworksAvailablesDataSourceModel
 
 	// Read Terraform configuration state into the model
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
@@ -94,7 +94,7 @@ func (d *blockNetworkAvailablesDataSource) Read(ctx context.Context, req datasou
 }
 
 // Configure adds the provider configured client to the data source.
-func (d *blockNetworkAvailablesDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+func (d *blockNetworksAvailablesDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
 	// Add a nil check when handling ProviderData because Terraform
 	// sets that data after it calls the ConfigureProvider RPC.
 	if req.ProviderData == nil {

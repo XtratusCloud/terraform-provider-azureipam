@@ -1,10 +1,12 @@
 package provider
 
 import (
+	"context"
 	ipamclient "terraform-provider-azureipam/ipamclient"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-timetypes/timetypes"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -70,7 +72,15 @@ type reservationModel struct {
 	Status      types.String      `tfsdk:"status"`
 }
 
-
+// blockNetworkModel maps Block Network schema data.
+type blockNetworkModel struct {
+	Id             types.String `tfsdk:"id"`
+	Name           types.String `tfsdk:"name"`
+	Prefixes       types.List   `tfsdk:"prefixes"`
+	ResourceGroup  types.String `tfsdk:"resource_group"`
+	SubscriptionId types.String `tfsdk:"subscription_id"`
+	TenantId       types.String `tfsdk:"tenant_id"`
+}
 
 //shared map functions 
 func flattenSpaceInfo(space *ipamclient.SpaceInfo) spaceModel {
@@ -218,4 +228,18 @@ func flattenReservationInfo(reservation *ipamclient.ReservationInfo) reservation
 	model.Status = types.StringValue(reservation.Status)
 
 	return model
+}
+
+func flattenBlockNetworkInfo(ctx context.Context, blockNetworks *ipamclient.BlockNetworkInfo) (blockNetworkModel,diag.Diagnostics) {
+	var model blockNetworkModel
+	var diags diag.Diagnostics 
+
+	model.Id =  types.StringValue(blockNetworks.Id)
+	model.Name = types.StringValue(blockNetworks.Name) 
+	model.Prefixes, diags = types.ListValueFrom(ctx, types.StringType, blockNetworks.Prefixes)
+	model.ResourceGroup= types.StringValue(*blockNetworks.ResourceGroup) 
+	model.SubscriptionId= types.StringValue(*blockNetworks.SubscriptionId) 
+	model.TenantId= types.StringValue(*blockNetworks.TenantId) 
+
+	return model,diags
 }

@@ -49,6 +49,7 @@
 + data resource `azureipam_reservation` to get a specific reservation by id in the specified space and block.
 + resource `azureipam_block_network` that allow to associate an existing azure network to the target block.
 + data resource `azureipam_block_networks_availables` to get the list of azure virtual networks availables to be associated with a space and block.
++ data resource `azureipam_block_networks` to get the list of networks actively associated to a space block.
 
 ### Modified (Breaking Change)
 + resource `azureipam_reservation` now allow to specify a block list. The list is evaluated in the order provider
