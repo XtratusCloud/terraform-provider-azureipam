@@ -238,7 +238,7 @@ func (r *blockNetworkResource) Configure(_ context.Context, req resource.Configu
 
 func (r *blockNetworkResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	// Retrieve import ID, validate, split and save to id attribute
-	re := regexp.MustCompile("^(?<space>[a-zA-Z0-9]*)/(?<block>[a-zA-Z0-9]*)/(?<id>/subscriptions/(?<SubscriptionId>.*)/resourceGroups/(?<ResourceGroupName>.*)/providers/(?<ResourceProviderNamespace>.*)/(?<ResourceType>.*)/(?<ResourceName>.*))$")
+	re := regexp.MustCompile("^(?<space>[a-zA-Z0-9\\._-]*)/(?<block>[a-zA-Z0-9\\._-]*)/(?<id>/subscriptions/(?<SubscriptionId>.*)/resourceGroups/(?<ResourceGroupName>.*)/providers/(?<ResourceProviderNamespace>.*)/(?<ResourceType>.*)/(?<ResourceName>.*))$")
 	
 	//validate
 	if !re.MatchString(req.ID) {

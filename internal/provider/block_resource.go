@@ -229,7 +229,7 @@ func (r *blockResource) Configure(_ context.Context, req resource.ConfigureReque
 
 func (r *blockResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	// Retrieve import ID, validate, split and save to id attribute
-	re := regexp.MustCompile("^(?<space>[a-zA-Z0-9]*)/(?<block>[a-zA-Z0-9]*)$")
+	re := regexp.MustCompile("^(?<space>[a-zA-Z0-9\\._-]*)/(?<block>[a-zA-Z0-9\\._-]*)$")
 	//validate
 	if !re.MatchString(req.ID) {
 		resp.Diagnostics.AddError(
