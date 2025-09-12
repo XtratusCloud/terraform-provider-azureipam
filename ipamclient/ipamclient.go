@@ -26,7 +26,7 @@ func NewClient(host, authToken *string, SkipCertificateVerification bool) (*Clie
 		tr = http.DefaultTransport //Use http.DefaultTransport, needed to allow acceptance tests with [jarcoal/httpmock](https://github.com/jarcoal/httpmock)
 	}
 	c := Client{
-		HTTPClient: &http.Client{Timeout: 10 * time.Second, Transport: tr},
+		HTTPClient: &http.Client{Timeout: 30 * time.Second, Transport: tr},
 	}
 
 	// set client values, if provided
