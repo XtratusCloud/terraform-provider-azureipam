@@ -160,11 +160,7 @@ func (c *Client) UpdateExternal(space string, block string, name string, newName
 				Cidr:        *newCidr,
 			})
 		} else {
-			request = append(request, externalRequest{
-				Name:        current.Name,
-				Description: current.Description,
-				Cidr:        current.Cidr,
-			})
+			request = append(request, externalRequest(current))
 		}
 	}
 	rb, err := json.Marshal(request)
