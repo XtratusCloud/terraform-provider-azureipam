@@ -76,7 +76,7 @@ func (c *Client) GetBlock(space string, name string, expand bool, appendUtilizat
 	}
 
 	//process response
-	var block Block	
+	var block Block
 	err = json.Unmarshal(response, &block)
 	if err != nil {
 		return nil, err

@@ -20,13 +20,13 @@ func NewClient(host, authToken *string, SkipCertificateVerification bool) (*Clie
 	var tr http.RoundTripper
 	if SkipCertificateVerification {
 		tr = &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, //Skip tls certificate verification if requested
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // Skip tls certificate verification if requested
 		}
 	} else {
-		tr = http.DefaultTransport //Use http.DefaultTransport, needed to allow acceptance tests with [jarcoal/httpmock](https://github.com/jarcoal/httpmock)
+		tr = http.DefaultTransport // Use http.DefaultTransport, needed to allow acceptance tests with [jarcoal/httpmock](https://github.com/jarcoal/httpmock)
 	}
 	c := Client{
-		HTTPClient: &http.Client{Timeout: 10 * time.Second, Transport: tr},
+		HTTPClient: &http.Client{Timeout: 30 * time.Second, Transport: tr},
 	}
 
 	// set client values, if provided
@@ -42,7 +42,7 @@ func NewClient(host, authToken *string, SkipCertificateVerification bool) (*Clie
 
 // doRequest -
 func (c *Client) doRequest(req *http.Request) ([]byte, error) {
-	//perform request
+	// perform request
 	req.Header.Add("Accept", "application/json")
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.Token))
 	res, err := c.HTTPClient.Do(req)
@@ -51,13 +51,13 @@ func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 	}
 	defer res.Body.Close()
 
-	//read response body
+	// read response body
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	//write error not StatusOK
+	// write error not StatusOK
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated && res.StatusCode != http.StatusAccepted && res.StatusCode != http.StatusNoContent {
 		return nil, fmt.Errorf("status: %d, body: %s", res.StatusCode, body)
 	}

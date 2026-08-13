@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-//internal Models
+// internal Models
 type spaceRequest struct {
 	Name        string `json:"name"`
 	Description string `json:"desc"`

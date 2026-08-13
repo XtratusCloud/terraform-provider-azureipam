@@ -59,12 +59,12 @@ func (c *Client) GetExternal(space string, block string, name string) (*External
 	}
 	//add attributes not included in response
 	ret := External{
-		Space: space,
-		Block: block,
-		Name: readed.Name,
+		Space:       space,
+		Block:       block,
+		Name:        readed.Name,
 		Description: readed.Description,
-		Cidr: readed.Cidr,
-	} 
+		Cidr:        readed.Cidr,
+	}
 
 	return &ret, nil
 }
@@ -90,14 +90,13 @@ func (c *Client) GetExternalInfo(space string, block string, name string) (*Exte
 	}
 	//add attributes not included in response
 	ret := ExternalInfo{
-		Name: readed.Name,
+		Name:        readed.Name,
 		Description: readed.Description,
-		Cidr: readed.Cidr,
-	} 
+		Cidr:        readed.Cidr,
+	}
 
 	return &ret, nil
 }
-
 
 // CreateExternal - Create new external network within a specific Space and Block.
 func (c *Client) CreateExternal(space string, block string, name string, desc string, cidr string) (*External, error) {
@@ -135,12 +134,12 @@ func (c *Client) CreateExternal(space string, block string, name string, desc st
 
 	//Create return object
 	ret := External{
-		Space: space,
-		Block: block,
-		Name: created.Name,
+		Space:       space,
+		Block:       block,
+		Name:        created.Name,
 		Description: created.Description,
-		Cidr: created.Cidr,
-	} 
+		Cidr:        created.Cidr,
+	}
 	return &ret, nil
 }
 
@@ -156,15 +155,15 @@ func (c *Client) UpdateExternal(space string, block string, name string, newName
 	for _, current := range *externals {
 		if current.Name == name {
 			request = append(request, externalRequest{
-				Name: *newName,
+				Name:        *newName,
 				Description: *newDescription,
-				Cidr: *newCidr,
+				Cidr:        *newCidr,
 			})
 		} else {
 			request = append(request, externalRequest{
-				Name: current.Name,
+				Name:        current.Name,
 				Description: current.Description,
-				Cidr: current.Cidr,
+				Cidr:        current.Cidr,
 			})
 		}
 	}

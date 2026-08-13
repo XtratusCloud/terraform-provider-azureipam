@@ -226,7 +226,7 @@ func (d *blockDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Unable to Read AzureIpam Block named: "+ state.Name.ValueString() + " is space: " + state.Space.ValueString(),
+			"Unable to Read AzureIpam Block named: "+state.Name.ValueString()+" is space: "+state.Space.ValueString(),
 			err.Error(),
 		)
 		return

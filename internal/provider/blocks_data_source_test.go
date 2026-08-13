@@ -123,7 +123,7 @@ func TestAccBlockWithUtilizationAndVnetDataSource(t *testing.T) {
 					//Verify common attributes to ensure that all are set
 					resource.TestCheckResourceAttr("data.azureipam_blocks.test", "space", "au"),
 					resource.TestCheckResourceAttr("data.azureipam_blocks.test", "append_utilization", "true"),
-					resource.TestCheckResourceAttr("data.azureipam_blocks.test", "expand", "true"),					
+					resource.TestCheckResourceAttr("data.azureipam_blocks.test", "expand", "true"),
 					// Verify number of blocks returned
 					resource.TestCheckResourceAttr("data.azureipam_blocks.test", "blocks.#", "2"),
 

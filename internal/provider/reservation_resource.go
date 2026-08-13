@@ -161,9 +161,9 @@ func (r *reservationResource) Create(ctx context.Context, req resource.CreateReq
 	}
 
 	var blocks *[]string
-	diag:= plan.Blocks.ElementsAs(ctx, &blocks, false)
+	diag := plan.Blocks.ElementsAs(ctx, &blocks, false)
 	resp.Diagnostics.Append(diag...)
- 	reservation, err := r.client.CreateReservation(
+	reservation, err := r.client.CreateReservation(
 		plan.Space.ValueString(),
 		*blocks,
 		plan.Description.ValueStringPointer(),

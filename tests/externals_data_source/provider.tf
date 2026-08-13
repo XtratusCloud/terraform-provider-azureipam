@@ -3,7 +3,7 @@
 terraform {
   required_providers {
     azureipam = {
-      source = "xtratuscloud/azureipam"
+      source = "sowens81/azureipam"
     }
     azurerm = {
       source  = "hashicorp/azurerm"

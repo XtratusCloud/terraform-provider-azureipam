@@ -239,7 +239,7 @@ func (r *blockNetworkResource) Configure(_ context.Context, req resource.Configu
 func (r *blockNetworkResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	// Retrieve import ID, validate, split and save to id attribute
 	re := regexp.MustCompile("^(?<space>[a-zA-Z0-9]*)/(?<block>[a-zA-Z0-9]*)/(?<id>/subscriptions/(?<SubscriptionId>.*)/resourceGroups/(?<ResourceGroupName>.*)/providers/(?<ResourceProviderNamespace>.*)/(?<ResourceType>.*)/(?<ResourceName>.*))$")
-	
+
 	//validate
 	if !re.MatchString(req.ID) {
 		resp.Diagnostics.AddError(
@@ -260,7 +260,7 @@ func (r *blockNetworkResource) ImportState(ctx context.Context, req resource.Imp
 }
 
 func flattenBlockNetwork(ctx context.Context, external *ipamclient.BlockNetworkInfo, model *blockNetworkResourceModel) diag.Diagnostics {
-	var diags diag.Diagnostics 
+	var diags diag.Diagnostics
 
 	model.Id = types.StringValue(external.Id)
 	model.Name = types.StringValue(external.Name)
