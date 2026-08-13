@@ -20,14 +20,12 @@ import (
 // can be customized.
 //go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs generate -provider-name azureipam
 
-var (
-	// these will be set by the goreleaser configuration
-	// to appropriate values for the compiled binary.
-	version string = "dev"
+// these will be set by the goreleaser configuration
+// to appropriate values for the compiled binary.
+var version string = "dev"
 
-	// goreleaser can pass other information to the main package, such as the specific commit
-	// https://goreleaser.com/cookbooks/using-main.version/
-)
+// goreleaser can pass other information to the main package, such as the specific commit
+// https://goreleaser.com/cookbooks/using-main.version/
 
 func main() {
 	var debug bool
@@ -36,9 +34,9 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/XtratusCloud/azureipam",
+		Address: "registry.terraform.io/sowens81/azureipam",
 		Debug:   debug,
-	} 
+	}
 
 	err := providerserver.Serve(context.Background(), provider.NewAzureIpamProvider(version), opts)
 	if err != nil {

@@ -17,7 +17,7 @@ type Reservation struct {
 	Tags        map[string]string `json:"tag,omitempty"`
 }
 
-//SpaceInfo
+// SpaceInfo
 type SpaceInfo struct {
 	Name        string      `json:"name,omitempty"`
 	Description string      `json:"desc,omitempty"`
@@ -26,7 +26,7 @@ type SpaceInfo struct {
 	Used        *float64    `json:"used,omitempty"`
 }
 
-//BlockInfo
+// BlockInfo
 type BlockInfo struct {
 	Name         string            `json:"name,omitempty"`
 	Cidr         string            `json:"cidr,omitempty"`
@@ -37,7 +37,7 @@ type BlockInfo struct {
 	Used         *float64          `json:"used,omitempty"`
 }
 
-//VnetInfo
+// VnetInfo
 type VnetInfo struct {
 	Name           *string      `json:"name,omitempty"`
 	Id             string       `json:"id,omitempty"`
@@ -50,7 +50,7 @@ type VnetInfo struct {
 	Used           *float64     `json:"used,omitempty"`
 }
 
-//SubnetInfo
+// SubnetInfo
 type SubnetInfo struct {
 	Name   string   `json:"name,omitempty"`
 	Prefix string   `json:"prefix,omitempty"`
@@ -58,14 +58,14 @@ type SubnetInfo struct {
 	Used   *float64 `json:"used,omitempty"`
 }
 
-//ExternalInfo
+// ExternalInfo
 type ExternalInfo struct {
 	Name        string `json:"name,omitempty"`
 	Description string `json:"desc,omitempty"`
 	Cidr        string `json:"cidr,omitempty"`
 }
 
-//ReservationInfo
+// ReservationInfo
 type ReservationInfo struct {
 	Id          string   `json:"id,omitempty"`
 	Cidr        string   `json:"cidr,omitempty"`
@@ -77,14 +77,14 @@ type ReservationInfo struct {
 	Status      string   `json:"status,omitempty"`
 }
 
-//Block
+// Block
 type Block struct {
 	Name  string `json:"name,omitempty"`
 	Space string `json:"space,omitempty"`
 	Cidr  string `json:"cidr,omitempty"`
 }
 
-//External
+// External
 type External struct {
 	Space       string `json:"space,omitempty"`
 	Block       string `json:"block,omitempty"`
@@ -93,7 +93,7 @@ type External struct {
 	Cidr        string `json:"cidr,omitempty"`
 }
 
-//BlockNetworkInfo
+// BlockNetworkInfo
 type BlockNetworkInfo struct {
 	Name           string   `json:"name,omitempty"`
 	Id             string   `json:"id,omitempty"`

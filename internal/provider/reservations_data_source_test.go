@@ -114,7 +114,7 @@ func TestAccReservationsWithSettledDataSource(t *testing.T) {
 							return nil
 						}
 						return errors.New("expected " + expected.String() + " got " + current.String())
-					}),					 
+					}),
 					resource.TestCheckResourceAttr("data.azureipam_reservations.test", "reservations.3.created_by", "spn:9fc2493a-b515-49a6-9d73-93e1bac5f6cc"),
 					resource.TestCheckResourceAttrWith("data.azureipam_reservations.test", "reservations.3.settled_on", func(value string) error {
 						expected, _ := time.Parse(time.RFC3339, "2024-04-03T09:18:41+02:00")
@@ -123,7 +123,7 @@ func TestAccReservationsWithSettledDataSource(t *testing.T) {
 							return nil
 						}
 						return errors.New("expected " + expected.String() + " got " + current.String())
-					}),					 
+					}),
 					resource.TestCheckResourceAttr("data.azureipam_reservations.test", "reservations.3.settled_by", "dummyemail@gmail.com"),
 					resource.TestCheckResourceAttr("data.azureipam_reservations.test", "reservations.3.status", "cancelledByUser"),
 					resource.TestCheckResourceAttr("data.azureipam_reservations.test", "reservations.3.tags.%", "1"),

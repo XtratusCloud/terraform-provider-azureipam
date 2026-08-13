@@ -14,7 +14,7 @@ type blockNetworkRequest struct {
 	Active bool   `json:"active"`
 }
 
-//GetBlockNetworksAvailables - Return a list of the Azure resource ids virtual networks availables to be associated to the space and block specified
+// GetBlockNetworksAvailables - Return a list of the Azure resource ids virtual networks availables to be associated to the space and block specified
 func (c *Client) GetBlockNetworksAvailables(space string, block string) (*[]string, error) {
 	//prepare request
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/api/spaces/%s/blocks/%s/available", c.HostURL, space, block), nil)
@@ -35,7 +35,6 @@ func (c *Client) GetBlockNetworksAvailables(space string, block string) (*[]stri
 
 	return &networkIds, nil
 }
-
 
 // GetBlockNetworksInfo - Returns a list of all Block Networks within a specific Space and Block.
 func (c *Client) GetBlockNetworksInfo(space string, block string, expand bool) (*[]BlockNetworkInfo, error) {
@@ -112,7 +111,7 @@ func (c *Client) CreateBlockNetwork(space string, block string, id string) (*Blo
 	}
 
 	//Create return object
-	ret,err := c.GetBlockNetworkInfo(space, block, id, true)
+	ret, err := c.GetBlockNetworkInfo(space, block, id, true)
 	if err != nil {
 		return nil, err
 	}
@@ -120,13 +119,13 @@ func (c *Client) CreateBlockNetwork(space string, block string, id string) (*Blo
 	return ret, nil
 }
 
- // DeleteBlockNetwork- Deletes a block network within a specific Space and Block.
+// DeleteBlockNetwork- Deletes a block network within a specific Space and Block.
 func (c *Client) DeleteBlockNetwork(space string, block string, id string) error {
-	
+
 	//construct body
-	request := []string {
+	request := []string{
 		id,
-	}	 
+	}
 	rb, err := json.Marshal(request)
 	if err != nil {
 		return err

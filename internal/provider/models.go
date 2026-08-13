@@ -23,13 +23,13 @@ type spaceModel struct {
 
 // blockModel maps block schema data.
 type blockModel struct {
-	Name         types.String            `tfsdk:"name"`
-	Cidr         types.String            `tfsdk:"cidr"`
-	Vnets        []vnetModel             `tfsdk:"vnets"`
-	Externals    []externalModel         `tfsdk:"externals"`
+	Name         types.String       `tfsdk:"name"`
+	Cidr         types.String       `tfsdk:"cidr"`
+	Vnets        []vnetModel        `tfsdk:"vnets"`
+	Externals    []externalModel    `tfsdk:"externals"`
 	Reservations []reservationModel `tfsdk:"reservations"`
-	Size         types.Float64           `tfsdk:"size"`
-	Used         types.Float64           `tfsdk:"used"`
+	Size         types.Float64      `tfsdk:"size"`
+	Used         types.Float64      `tfsdk:"used"`
 }
 
 // vnetModel maps vnet schema data.
@@ -82,7 +82,7 @@ type blockNetworkModel struct {
 	TenantId       types.String `tfsdk:"tenant_id"`
 }
 
-//shared map functions 
+// shared map functions
 func flattenSpaceInfo(space *ipamclient.SpaceInfo) spaceModel {
 	var model spaceModel
 
@@ -230,16 +230,16 @@ func flattenReservationInfo(reservation *ipamclient.ReservationInfo) reservation
 	return model
 }
 
-func flattenBlockNetworkInfo(ctx context.Context, blockNetworks *ipamclient.BlockNetworkInfo) (blockNetworkModel,diag.Diagnostics) {
+func flattenBlockNetworkInfo(ctx context.Context, blockNetworks *ipamclient.BlockNetworkInfo) (blockNetworkModel, diag.Diagnostics) {
 	var model blockNetworkModel
-	var diags diag.Diagnostics 
+	var diags diag.Diagnostics
 
-	model.Id =  types.StringValue(blockNetworks.Id)
-	model.Name = types.StringValue(blockNetworks.Name) 
+	model.Id = types.StringValue(blockNetworks.Id)
+	model.Name = types.StringValue(blockNetworks.Name)
 	model.Prefixes, diags = types.ListValueFrom(ctx, types.StringType, blockNetworks.Prefixes)
-	model.ResourceGroup= types.StringValue(*blockNetworks.ResourceGroup) 
-	model.SubscriptionId= types.StringValue(*blockNetworks.SubscriptionId) 
-	model.TenantId= types.StringValue(*blockNetworks.TenantId) 
+	model.ResourceGroup = types.StringValue(*blockNetworks.ResourceGroup)
+	model.SubscriptionId = types.StringValue(*blockNetworks.SubscriptionId)
+	model.TenantId = types.StringValue(*blockNetworks.TenantId)
 
-	return model,diags
+	return model, diags
 }

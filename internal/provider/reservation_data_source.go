@@ -125,15 +125,15 @@ func (d *reservationDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 	//  Map response body to state model
 	var model reservationResourceModel //to reuse existing flatten method
-	flattenReservation(reservation,&model) 
+	flattenReservation(reservation, &model)
 	state.Id = model.Id
 	state.Cidr = model.Cidr
 	state.Description = model.Description
 	state.CreatedOn = model.CreatedOn
 	state.CreatedBy = model.CreatedBy
-	state.SettledOn = model.SettledOn 
+	state.SettledOn = model.SettledOn
 	state.SettledBy = model.SettledBy
-	state.Status = model.Status 
+	state.Status = model.Status
 	state.Tags, _ = types.MapValueFrom(ctx, types.StringType, reservation.Tags)
 
 	// Set state

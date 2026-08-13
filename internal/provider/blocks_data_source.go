@@ -57,7 +57,7 @@ func (d *blocksDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			"append_utilization": schema.BoolAttribute{
 				Description: "Indicates if utilization information for each network must be included.",
 				Optional:    true,
-			},			
+			},
 			"blocks": schema.ListNestedAttribute{
 				Description: "List containing the `blocks` included in the specified `space`.",
 				Computed:    true,
@@ -264,4 +264,4 @@ func (d *blocksDataSource) Configure(_ context.Context, req datasource.Configure
 	}
 
 	d.client = client
-} 
+}

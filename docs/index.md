@@ -24,12 +24,12 @@ terraform {
   required_providers {
     azureipam = {
       version = "~>2.0"
-      source  = "xtratuscloud/azureipam"
+      source  = "sowens81/azureipam"
     }
   }
 }
 
-# Replace with appropriate values for your AZURE IPAM implementation. 
+# Replace with appropriate values for your AZURE IPAM implementation.
 locals {
   ipam_url   = "https://myazureipam.azurewebsites.net"
   ipam_apiId = "d47d5cd9-b599-4a6a-9d54-254565ff08de" #ApplicationId of the Engine Azure AD Application, see also the [IPAM deployment documentation](https://github.com/Azure/ipam/tree/main/docs/deployment)

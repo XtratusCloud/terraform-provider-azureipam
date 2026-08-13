@@ -29,8 +29,8 @@ type externalsDataSource struct {
 
 // externalsDataSourceModel maps the data source schema data.
 type externalsDataSourceModel struct {
-	Space     types.String      `tfsdk:"space"`
-	Block     types.String      `tfsdk:"block"`
+	Space     types.String    `tfsdk:"space"`
+	Block     types.String    `tfsdk:"block"`
 	Externals []externalModel `tfsdk:"externals"`
 }
 
@@ -52,7 +52,7 @@ func (d *externalsDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 				Description: "Name of the block for which to search the associated `externals`.",
 				Required:    true,
 			},
-			 
+
 			"externals": schema.ListNestedAttribute{
 				Description: "List containing the `externals` found.",
 				Computed:    true,
@@ -70,7 +70,6 @@ func (d *externalsDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 							Description: "The IP range configured in the external network, in cidr notation.",
 							Computed:    true,
 						},
-						 
 					},
 				},
 			},
