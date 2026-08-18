@@ -15,8 +15,11 @@ type Client struct {
 	Token      string
 }
 
+// DefaultRequestTimeoutSeconds is used when no timeout is explicitly configured.
+const DefaultRequestTimeoutSeconds = 10
+
 // NewClient - Construct a new HTTP Client to interact with the APIM REST API
-func NewClient(host, authToken *string, SkipCertificateVerification bool) (*Client, error) {
+func NewClient(host, authToken *string, SkipCertificateVerification bool, requestTimeoutSeconds int) (*Client, error) {
 	var tr http.RoundTripper
 	if SkipCertificateVerification {
 		tr = &http.Transport{
@@ -25,8 +28,11 @@ func NewClient(host, authToken *string, SkipCertificateVerification bool) (*Clie
 	} else {
 		tr = http.DefaultTransport //Use http.DefaultTransport, needed to allow acceptance tests with [jarcoal/httpmock](https://github.com/jarcoal/httpmock)
 	}
+	if requestTimeoutSeconds <= 0 {
+		requestTimeoutSeconds = DefaultRequestTimeoutSeconds
+	}
 	c := Client{
-		HTTPClient: &http.Client{Timeout: 10 * time.Second, Transport: tr},
+		HTTPClient: &http.Client{Timeout: time.Duration(requestTimeoutSeconds) * time.Second, Transport: tr},
 	}
 
 	// set client values, if provided
