@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"os"
+	"strconv"
 
 	ipamclient "terraform-provider-azureipam/ipamclient"
 
@@ -44,6 +45,7 @@ type azureIpamProviderModel struct {
 	ApiUrl                      types.String `tfsdk:"api_url"`
 	Token                       types.String `tfsdk:"token"`
 	SkipCertificateVerification types.Bool   `tfsdk:"skip_cert_verification"`
+	RequestTimeoutSeconds       types.Int64  `tfsdk:"request_timeout_seconds"`
 }
 
 // Metadata returns the provider type name.
@@ -68,6 +70,10 @@ func (p *azureIpamProvider) Schema(ctx context.Context, req provider.SchemaReque
 			},
 			"skip_cert_verification": schema.BoolAttribute{
 				MarkdownDescription: "Specifies it the certificate chain validation must be skipped calling the API endpoint. Default to false.",
+				Optional:            true,
+			},
+			"request_timeout_seconds": schema.Int64Attribute{
+				MarkdownDescription: "HTTP client timeout, in seconds, for calls made to the AzureIpam REST API. Must be also assigned at AZUREIPAM_REQUEST_TIMEOUT_SECONDS environment variable. Defaults to 60.",
 				Optional:            true,
 			},
 		},
@@ -151,14 +157,25 @@ func (p *azureIpamProvider) Configure(ctx context.Context, req provider.Configur
 		skipCertVerification = config.SkipCertificateVerification.ValueBool()
 	}
 
+	requestTimeoutSeconds := ipamclient.DefaultRequestTimeoutSeconds
+	if envTimeout := os.Getenv("AZUREIPAM_REQUEST_TIMEOUT_SECONDS"); envTimeout != "" {
+		if parsed, err := strconv.Atoi(envTimeout); err == nil {
+			requestTimeoutSeconds = parsed
+		}
+	}
+	if !config.RequestTimeoutSeconds.IsNull() {
+		requestTimeoutSeconds = int(config.RequestTimeoutSeconds.ValueInt64())
+	}
+
 	ctx = tflog.SetField(ctx, "azureipam_api_url", apiUrl)
 	ctx = tflog.SetField(ctx, "azureipam_token", token)
 	ctx = tflog.SetField(ctx, "azureipam_skip_cert_verification", skipCertVerification)
+	ctx = tflog.SetField(ctx, "azureipam_request_timeout_seconds", requestTimeoutSeconds)
 	ctx = tflog.MaskFieldValuesWithFieldKeys(ctx, "azureipam_token")
 
 	tflog.Debug(ctx, "Creating AzureIpam client")
 	// Create a new AzureIpam client using the configuration values
-	client, err := ipamclient.NewClient(&apiUrl, &token, skipCertVerification)
+	client, err := ipamclient.NewClient(&apiUrl, &token, skipCertVerification, requestTimeoutSeconds)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Create AzureIpam API Client",
