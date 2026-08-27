@@ -16,7 +16,7 @@ type Client struct {
 }
 
 // DefaultRequestTimeoutSeconds is used when no timeout is explicitly configured.
-const DefaultRequestTimeoutSeconds = 10
+const DefaultRequestTimeoutSeconds = 60
 
 // NewClient - Construct a new HTTP Client to interact with the APIM REST API
 func NewClient(host, authToken *string, SkipCertificateVerification bool, requestTimeoutSeconds int) (*Client, error) {

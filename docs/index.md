@@ -55,6 +55,6 @@ provider "azureipam" {
 ### Optional
 
 - `api_url` (String) The root url of the APIM REST API solution to be used, without the /api url suffix. Must be also assigned at AZUREIPAM_API_URL environment variable.
-- `request_timeout_seconds` (Number) HTTP client timeout, in seconds, for calls made to the AzureIpam REST API. Must be also assigned at AZUREIPAM_REQUEST_TIMEOUT_SECONDS environment variable. Defaults to 10.
+- `request_timeout_seconds` (Number) HTTP client timeout, in seconds, for calls made to the AzureIpam REST API. Must be also assigned at AZUREIPAM_REQUEST_TIMEOUT_SECONDS environment variable. Defaults to 60.
 - `skip_cert_verification` (Boolean) Specifies it the certificate chain validation must be skipped calling the API endpoint. Default to false.
 - `token` (String, Sensitive) The bearer token to be used when authenticating to the API. Must be also assigned at AZUREIPAM_TOKEN environment variable.

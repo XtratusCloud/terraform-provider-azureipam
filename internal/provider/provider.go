@@ -73,7 +73,7 @@ func (p *azureIpamProvider) Schema(ctx context.Context, req provider.SchemaReque
 				Optional:            true,
 			},
 			"request_timeout_seconds": schema.Int64Attribute{
-				MarkdownDescription: "HTTP client timeout, in seconds, for calls made to the AzureIpam REST API. Must be also assigned at AZUREIPAM_REQUEST_TIMEOUT_SECONDS environment variable. Defaults to 10.",
+				MarkdownDescription: "HTTP client timeout, in seconds, for calls made to the AzureIpam REST API. Must be also assigned at AZUREIPAM_REQUEST_TIMEOUT_SECONDS environment variable. Defaults to 60.",
 				Optional:            true,
 			},
 		},
